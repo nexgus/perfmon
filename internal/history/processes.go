@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"slices"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 // ProcessList 為某次取樣的 GPU 程序列表. Procs 為 JSON 陣列, 每個元素為一個程序,
@@ -19,7 +19,7 @@ type ProcessList struct {
 // 程序列表因檔案損壞而無法還原時回傳 nil. 元素帶有整數成員 util (0 至 100) 時原樣保留; 沒有
 // util 而有累計值 (Intel 與 AMD) 的元素, 以該次與前一次取樣的列表相減算出後加入 util, 算法
 // 與監看畫面相同 (5.4). 沒有前一次取樣, 兩次之間有斷線記錄, 該程序不在前一次的列表內, 或
-// 累計值減少時, 不加入 util. 版本 1 的記錄檔以程序記錄為單位, 規則相同.
+// 累計值減少時, 不加入 util.
 func ProcessesAt(path string, t int64) (*ProcessList, error) {
 	f, err := recording.Open(path)
 	if err != nil {

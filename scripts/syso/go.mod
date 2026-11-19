@@ -1,4 +1,4 @@
-// 本目錄為產生 Windows 執行檔圖示資源 (.syso) 的獨立工具 module, 不屬於 gpumon 主
+// 本目錄為產生 Windows 執行檔圖示資源 (.syso) 的獨立工具 module, 不屬於 perfmon 主
 // module, 由 build.sh 以 go run 呼叫.
 module syso
 

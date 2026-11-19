@@ -16,12 +16,12 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
-	"gpumon/internal/history"
-	"gpumon/internal/monitor"
-	"gpumon/internal/protocol"
-	"gpumon/internal/recording"
-	"gpumon/internal/settings"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/history"
+	"perfmon/internal/monitor"
+	"perfmon/internal/protocol"
+	"perfmon/internal/recording"
+	"perfmon/internal/settings"
+	"perfmon/internal/sshconn"
 )
 
 func init() {

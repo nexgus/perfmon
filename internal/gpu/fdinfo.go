@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 // drmClient 為一個 DRM client 於 /proc/<pid>/fdinfo/<fd> 內的用量資訊, 欄位

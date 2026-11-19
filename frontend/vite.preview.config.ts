@@ -9,7 +9,7 @@ const fake = fileURLToPath(new URL("./src/preview/mockBackend.ts", import.meta.u
 
 function mockBackend(): Plugin {
   return {
-    name: "gpumon-mock-backend",
+    name: "perfmon-mock-backend",
     enforce: "pre",
     async resolveId(source, importer, options) {
       const r = await this.resolve(source, importer, { ...options, skipSelf: true });

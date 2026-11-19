@@ -298,8 +298,8 @@ func (l gpuList) apply(changes []GPUProc) {
 	}
 }
 
-// json 回傳列表的 JSON 陣列, 格式與版本 1 的程序記錄相同, 每個元素為一個 procs 元素, 另加成員
-// gpu. 元素依 GPU id 與程序編號排序.
+// json 回傳列表的 JSON 陣列, 每個元素為一個 procs 元素, 另加成員 gpu.
+// 元素依 GPU id 與程序編號排序.
 func (l gpuList) json() json.RawMessage {
 	keys := slices.SortedFunc(maps.Keys(l), func(a, b gpuKey) int {
 		return cmp.Or(cmp.Compare(a.gpu, b.gpu), cmp.Compare(a.pid, b.pid))

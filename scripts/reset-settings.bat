@@ -1,5 +1,5 @@
 @echo off
-rem Clears all GPU Monitor settings so that the program starts with default
+rem Clears all PerfMon settings so that the program starts with default
 rem settings next time, the same as after a fresh install. Recordings (the
 rem history folder in the data folder) are kept.
 rem
@@ -7,7 +7,7 @@ rem Usage: reset-settings.bat [-y]
 rem   -y  Delete without asking for confirmation.
 rem
 rem Deletes settings.json and the settings.json.* backups and temporary files
-rem in the data folder %LOCALAPPDATA%\gpumon. When GPUMON_DATA_DIR is set, it
+rem in the data folder %LOCALAPPDATA%\perfmon. When PERFMON_DATA_DIR is set, it
 rem is used instead, the same way the GUI decides its data folder.
 rem
 rem The GUI writes its complete in-memory settings back to the file on every
@@ -41,19 +41,23 @@ set "RC=0"
 goto :end
 
 :args_done
-if defined GPUMON_DATA_DIR (
-    set "DATA_DIR=%GPUMON_DATA_DIR%"
+if defined PERFMON_DATA_DIR (
+    set "DATA_DIR=%PERFMON_DATA_DIR%"
 ) else if defined LOCALAPPDATA (
-    set "DATA_DIR=%LOCALAPPDATA%\gpumon"
+    set "DATA_DIR=%LOCALAPPDATA%\perfmon"
 ) else (
-    set "DATA_DIR=%APPDATA%\gpumon"
+    set "DATA_DIR=%APPDATA%\perfmon"
 )
 
-rem The GUI executable is gpumon.exe (installed by the .msi) or
-rem gpumon-<version>-windows-amd64.exe (direct output of build.sh).
-tasklist /NH 2>nul | findstr /I /B /C:"gpumon" >nul
-if not errorlevel 1 (
-    echo GPU Monitor is running. Quit it first, then run this script again. 1>&2
+rem The GUI executable is perfmon.exe (installed by the .msi) or
+rem perfmon-<version>-windows-amd64.exe (direct output of build.sh). The
+rem Windows Performance Monitor command is also named perfmon.exe and lives
+rem under %SystemRoot%, so a process counts as PerfMon only when its image
+rem path is outside %SystemRoot%. Processes whose path cannot be read are
+rem skipped.
+powershell -NoProfile -Command "$r=$env:SystemRoot; if (Get-Process | Where-Object { $_.Name -match '^perfmon(-.*)?$' -and $_.Path -and -not $_.Path.StartsWith($r, [StringComparison]::OrdinalIgnoreCase) }) { exit 1 } else { exit 0 }"
+if errorlevel 1 (
+    echo PerfMon is running. Quit it first, then run this script again. 1>&2
     set "RC=1"
     goto :end
 )
@@ -84,7 +88,7 @@ if exist "%DATA_DIR%\settings.json*" (
     set "RC=1"
     goto :end
 )
-echo Settings cleared. GPU Monitor will start with default settings.
+echo Settings cleared. PerfMon will start with default settings.
 set "RC=0"
 goto :end
 

@@ -3,7 +3,7 @@ package history
 import (
 	"path/filepath"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 // Pending 為某記錄檔尚未寫入磁碟的記錄, 依寫入的先後排列, 時刻不遞減. 查詢時視為接續於該檔的檔尾.

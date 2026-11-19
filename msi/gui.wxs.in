@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  GPU Monitor 的 Windows 安裝包定義檔範本, 以 wixl 編譯.
+  PerfMon 的 Windows 安裝包定義檔範本, 以 wixl 編譯.
 
   build.sh 以 sed 替換下列佔位符後產出 msi/gui.wxs (不入版控):
     @VERSION@      MSI Product Version, 為剝除 pre-release 尾碼的純數字 x.y.z.
@@ -11,7 +11,7 @@
   AllowSameVersionUpgrades 允許同版本覆蓋, 降級維持拒絕.
 
   安裝範圍為 perUser, 不需管理員權限, 安裝目錄為
-  %LOCALAPPDATA%\Programs\Augustus Chen\GPU Monitor\. 只建立開始功能表捷徑,
+  %LOCALAPPDATA%\Programs\Augustus Chen\PerfMon\. 只建立開始功能表捷徑,
   不建立桌面捷徑; wixl 不支援 <UI> 元素, 無法在安裝過程讓使用者勾選.
 
   圖示檔路徑相對於 build.sh 執行 wixl 時的工作目錄 (專案根目錄). ARPPRODUCTICON
@@ -19,16 +19,16 @@
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*"
-           Name="GPU Monitor"
+           Name="PerfMon"
            Language="1033"
            Version="@VERSION@"
            Manufacturer="Augustus Chen"
-           UpgradeCode="D331C0B0-E160-4CDD-B018-1C747423E93C">
+           UpgradeCode="1A00FEFE-A2C3-4154-9FD9-E9A8DBE91FC2">
 
     <Package InstallerVersion="500"
              Compressed="yes"
              InstallScope="perUser"
-             Description="GPU Monitor"
+             Description="PerfMon"
              Manufacturer="Augustus Chen" />
 
     <MajorUpgrade AllowSameVersionUpgrades="yes"
@@ -41,20 +41,20 @@
     -->
     <Property Id="REINSTALLMODE" Value="amus" />
 
-    <Icon Id="gpumon.ico" SourceFile="assets/icon/gpumon.ico" />
-    <Property Id="ARPPRODUCTICON" Value="gpumon.ico" />
+    <Icon Id="perfmon.ico" SourceFile="assets/icon/perfmon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="perfmon.ico" />
 
-    <Media Id="1" Cabinet="gpumon.cab" EmbedCab="yes" />
+    <Media Id="1" Cabinet="perfmon.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="LocalAppDataFolder">
         <Directory Id="ProgramsFolder" Name="Programs">
           <Directory Id="VendorFolder" Name="Augustus Chen">
-            <Directory Id="INSTALLDIR" Name="GPU Monitor">
-              <Component Id="GpumonExe" Guid="*" Win64="yes">
-                <File Id="GpumonExe"
-                      Source="bin/gpumon-@FULLVERSION@-windows-amd64.exe"
-                      Name="gpumon.exe"
+            <Directory Id="INSTALLDIR" Name="PerfMon">
+              <Component Id="PerfmonExe" Guid="*" Win64="yes">
+                <File Id="PerfmonExe"
+                      Source="bin/perfmon-@FULLVERSION@-windows-amd64.exe"
+                      Name="perfmon.exe"
                       KeyPath="yes" />
               </Component>
             </Directory>
@@ -63,14 +63,14 @@
       </Directory>
 
       <Directory Id="ProgramMenuFolder">
-        <Component Id="GpumonStartMenuShortcut" Guid="*" Win64="yes">
-          <Shortcut Id="GpumonStartMenuShortcut"
-                    Name="GPU Monitor"
-                    Description="GPU Monitor"
-                    Target="[INSTALLDIR]gpumon.exe"
+        <Component Id="PerfmonStartMenuShortcut" Guid="*" Win64="yes">
+          <Shortcut Id="PerfmonStartMenuShortcut"
+                    Name="PerfMon"
+                    Description="PerfMon"
+                    Target="[INSTALLDIR]perfmon.exe"
                     WorkingDirectory="INSTALLDIR" />
           <RegistryValue Root="HKCU"
-                         Key="Software\Augustus Chen\GPU Monitor"
+                         Key="Software\Augustus Chen\PerfMon"
                          Name="start_menu_shortcut"
                          Type="integer"
                          Value="1"
@@ -80,9 +80,9 @@
 
     </Directory>
 
-    <Feature Id="Main" Title="GPU Monitor" Level="1">
-      <ComponentRef Id="GpumonExe" />
-      <ComponentRef Id="GpumonStartMenuShortcut" />
+    <Feature Id="Main" Title="PerfMon" Level="1">
+      <ComponentRef Id="PerfmonExe" />
+      <ComponentRef Id="PerfmonStartMenuShortcut" />
     </Feature>
 
   </Product>

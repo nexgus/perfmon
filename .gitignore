@@ -9,7 +9,7 @@ CLAUDE.md
 # build.sh 由 msi/gui.wxs.in 產生的中間檔.
 /msi/gui.wxs
 
-# build.sh 由 assets/icon/gpumon.ico 產生的 Windows 圖示資源.
+# build.sh 由 assets/icon/perfmon.ico 產生的 Windows 圖示資源.
 /cmd/gui/rsrc_windows_amd64.syso
 
 # 前端的相依套件, 打包產出與每次建置重新產生的 bindings.
@@ -18,7 +18,7 @@ CLAUDE.md
 /frontend/bindings/
 
 # build.sh 複製進來供 GUI 內嵌的遠端程式.
-/internal/remotebin/gpumon.bin
+/internal/remotebin/perfmon.bin
 
 # 不追蹤 graphify 的產物
 /graphify-out/

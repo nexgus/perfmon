@@ -17,11 +17,11 @@ import (
 	"testing"
 	"time"
 
-	"gpumon/internal/history"
-	"gpumon/internal/protocol"
-	"gpumon/internal/recording"
-	"gpumon/internal/settings"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/history"
+	"perfmon/internal/protocol"
+	"perfmon/internal/recording"
+	"perfmon/internal/settings"
+	"perfmon/internal/sshconn"
 )
 
 func TestStateTransitions(t *testing.T) {

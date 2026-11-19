@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"gpumon/internal/protocol"
-	"gpumon/internal/settings"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/protocol"
+	"perfmon/internal/settings"
+	"perfmon/internal/sshconn"
 )
 
 // testTiming 為測試用的縮短時間. 心跳與重試間隔為 60 ms.
@@ -368,7 +368,7 @@ func connectErr(msg string) error {
 
 func hostFiles(t *testing.T, dir, name string) []string {
 	t.Helper()
-	m, _ := filepath.Glob(filepath.Join(dir, "history", name, "*.gpurec"))
+	m, _ := filepath.Glob(filepath.Join(dir, "history", name, "*.perfrec"))
 	return m
 }
 

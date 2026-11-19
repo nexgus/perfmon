@@ -1,4 +1,4 @@
-module gpumon
+module perfmon
 
 go 1.26.0
 

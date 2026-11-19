@@ -1,6 +1,6 @@
 package shell
 
-import "gpumon/internal/settings"
+import "perfmon/internal/settings"
 
 // rect 為以 DIP 表示的矩形, 座標系與 Wails 的視窗位置及螢幕範圍相同, 原點為主螢幕
 // 的左上角.

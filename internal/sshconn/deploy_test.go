@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"gpumon/internal/version"
+	"perfmon/internal/version"
 )
 
 // fakeRemote 產生假的遠端程式: 一個 shell 腳本, --version 輸出指定的版本與協定
@@ -30,7 +30,7 @@ func fakeRemoteHash(ver, hash string, proto int) []byte {
 func fakeRemoteSuffix(ver, suffix string, proto int) []byte {
 	return []byte(fmt.Sprintf(`#!/bin/sh
 case "$1" in
---version) echo "gpumon %s%s (protocol %d)"; exit 0;;
+--version) echo "perfmon %s%s (protocol %d)"; exit 0;;
 --loop) echo '{"type":"devices","protocol":%d,"version":"%s","hostname":"fake","gpus":[]}'; echo "args: $*" >&2
   while read line; do :; done; exit 0;;
 esac
@@ -105,7 +105,7 @@ func TestDeployFlow(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !dep.Uploaded || dep.Remote != nil || dep.Protocol != 1 || dep.Home != f.srv.home ||
-		dep.Path != f.srv.home+"/.gpumon/gpumon" {
+		dep.Path != f.srv.home+"/.perfmon/perfmon" {
 		t.Errorf("fresh deploy = %+v", dep)
 	}
 	data, _ := os.ReadFile(f.remotePath())
@@ -119,7 +119,7 @@ func TestDeployFlow(t *testing.T) {
 		t.Errorf("directory mode = %v", st.Mode())
 	}
 	if _, err := os.Stat(filepath.Join(filepath.Dir(f.remotePath()), remoteTmpName)); !os.IsNotExist(err) {
-		t.Error("gpumon.tmp left behind")
+		t.Error("perfmon.tmp left behind")
 	}
 	for _, c := range f.srv.commands() {
 		if !strings.HasPrefix(c, "sh -c ") {
@@ -202,7 +202,7 @@ func TestDeployFlow(t *testing.T) {
 	}
 
 	// 無法取得遠端的程式版號 (輸出不合格式), 上傳.
-	writeFile(t, f.remotePath(), "#!/bin/sh\necho gpumon 0.2.0\n", 0o755)
+	writeFile(t, f.remotePath(), "#!/bin/sh\necho perfmon 0.2.0\n", 0o755)
 	dep, err = f.c.Deploy(ctx, opts)
 	if err != nil || !dep.Uploaded || dep.Remote != nil {
 		t.Errorf("unknown version: %+v %v", dep, err)
@@ -219,7 +219,7 @@ func TestDeployFlow(t *testing.T) {
 	writeFile(t, f.remotePath(), string(fakeRemoteHash("0.3.0", guiHash, 2)), 0o755)
 	_, err = f.c.Deploy(ctx, opts)
 	expectKind(t, err, KindProtocolTooNew)
-	if !strings.Contains(err.Error(), "update GPU Monitor") {
+	if !strings.Contains(err.Error(), "update PerfMon") {
 		t.Errorf("message = %v", err)
 	}
 }
@@ -326,9 +326,9 @@ type confirmRecorder struct {
 	reqs []UploadRequest
 	// before 為呼叫當下遠端程式的內容; 不存在時為 nil.
 	before [][]byte
-	// dirExisted 為呼叫當下 ~/.gpumon/ 是否存在.
+	// dirExisted 為呼叫當下 ~/.perfmon/ 是否存在.
 	dirExisted []bool
-	// tmpExisted 為呼叫當下 gpumon.tmp 是否存在.
+	// tmpExisted 為呼叫當下 perfmon.tmp 是否存在.
 	tmpExisted []bool
 }
 
@@ -467,7 +467,7 @@ func TestDeployConfirmUploadHash(t *testing.T) {
 		}
 		f := newDeployFixture(t)
 		writeFile(t, f.remotePath(), string(fakeRemote("0.3.0", 1)), 0o000)
-		f.versionOut = "gpumon 0.3.0+abcdef0 (protocol 1)\n"
+		f.versionOut = "perfmon 0.3.0+abcdef0 (protocol 1)\n"
 		req := run(t, f, opts)
 		if req.RemoteHash != "abcdef0" {
 			t.Errorf("request = %+v", req)

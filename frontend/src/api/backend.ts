@@ -1,7 +1,7 @@
 // 以 Wails 產生的 bindings 實作 Backend 介面. 前端只經由本檔案呼叫後端; 預覽頁的
 // Vite 設定 (vite.preview.config.ts) 把本檔案換成以假資料實作的版本.
 import { Browser, Clipboard, Events } from "@wailsio/runtime";
-import { AppService, HostService, RecordingService, SettingsService } from "../../bindings/gpumon/cmd/gui/backend";
+import { AppService, HostService, RecordingService, SettingsService } from "../../bindings/perfmon/cmd/gui/backend";
 import type { Backend, BackendEvents } from "./types";
 
 // 以 any 轉接 bindings 的列舉與類別型別; 兩者的 JSON 結構與 api/types.ts 相同.

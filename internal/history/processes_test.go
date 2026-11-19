@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 func procs(gpu int, n int, tag string) []recording.GPUProcs {

@@ -16,13 +16,13 @@ function packageOf(id: string): { name: string; dir: string } | null {
   return { name, dir: path.slice(0, at + marker.length) + name };
 }
 
-// bundledPackages 於環境變數 GPUMON_NPM_PACKAGES 指定路徑時, 將實際打包進產出
+// bundledPackages 於環境變數 PERFMON_NPM_PACKAGES 指定路徑時, 將實際打包進產出
 // 的 npm 套件寫入該檔案, 每行為 "<名稱>\t<目錄>", 依名稱排序. 此檔案為
 // build.sh 產生第三方授權清單的輸入.
 function bundledPackages(): Plugin {
-  const out = process.env.GPUMON_NPM_PACKAGES;
+  const out = process.env.PERFMON_NPM_PACKAGES;
   return {
-    name: "gpumon-bundled-packages",
+    name: "perfmon-bundled-packages",
     apply: "build",
     generateBundle(_options, bundle) {
       if (!out) {

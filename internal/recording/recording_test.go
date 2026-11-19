@@ -168,7 +168,7 @@ func TestConformanceBytes(t *testing.T) {
 		t.Fatal(err)
 	}
 	meta := `{"host":"a@b","t_wall_0":1000000,"ts_0":100.5,"devices":{"gpus":[{"id":0},{"id":1}]}}`
-	head := append([]byte("GPUMONRC"), 0x02, 0x00, 0x02, 0x00, byte(len(meta)), 0, 0, 0)
+	head := append([]byte("PERFMONR"), 0x02, 0x00, 0x02, 0x00, byte(len(meta)), 0, 0, 0)
 	head = append(head, meta...)
 	if !bytes.HasPrefix(got, head) {
 		t.Fatalf("fixed area and header differ:\n got %x\nwant %x", got[:len(head)], head)
@@ -701,15 +701,15 @@ func TestOpenRejects(t *testing.T) {
 
 	bad := append([]byte(nil), data...)
 	bad[0] = 'X'
-	p1 := filepath.Join(dir, "magic.gpurec")
+	p1 := filepath.Join(dir, "magic.perfrec")
 	os.WriteFile(p1, bad, 0o644)
 	if _, err := Open(p1); !errors.Is(err, ErrNotRecording) {
 		t.Fatalf("err = %v", err)
 	}
-	for _, v := range []byte{0, 3, 7} {
+	for _, v := range []byte{0, 1, 3, 7} {
 		bad = append([]byte(nil), data...)
 		bad[8] = v
-		p2 := filepath.Join(dir, "ver.gpurec")
+		p2 := filepath.Join(dir, "ver.perfrec")
 		os.WriteFile(p2, bad, 0o644)
 		_, err := Open(p2)
 		var uv *UnsupportedVersionError
@@ -717,7 +717,7 @@ func TestOpenRejects(t *testing.T) {
 			t.Fatalf("err = %v", err)
 		}
 	}
-	p3 := filepath.Join(dir, "short.gpurec")
+	p3 := filepath.Join(dir, "short.perfrec")
 	os.WriteFile(p3, []byte("GPU"), 0o644)
 	if _, err := Open(p3); !errors.Is(err, ErrNotRecording) {
 		t.Fatalf("err = %v", err)
@@ -727,10 +727,10 @@ func TestOpenRejects(t *testing.T) {
 func TestUnknownHeaderMember(t *testing.T) {
 	dir := t.TempDir()
 	meta := `{"host":"h","future":{"a":1},"t_wall_0":5,"ts_0":1.5,"devices":{"gpus":[{"id":4}]}}`
-	b := []byte("GPUMONRC")
+	b := []byte("PERFMONR")
 	b = append(b, 2, 0, 1, 0, byte(len(meta)), 0, 0, 0)
 	b = append(b, meta...)
-	p := filepath.Join(dir, "x.gpurec")
+	p := filepath.Join(dir, "x.perfrec")
 	os.WriteFile(p, b, 0o644)
 	f := open(t, p)
 	if f.Header().Host != "h" || f.GPUIDs()[0] != 4 {
@@ -798,7 +798,7 @@ func TestFileNames(t *testing.T) {
 		defer w.Close()
 		names = append(names, filepath.Base(w.Path()))
 	}
-	want := []string{"20261105-130409.gpurec", "20261105-130409-2.gpurec", "20261105-130409-3.gpurec"}
+	want := []string{"20261105-130409.perfrec", "20261105-130409-2.perfrec", "20261105-130409-3.perfrec"}
 	if !reflect.DeepEqual(names, want) {
 		t.Fatalf("names = %v", names)
 	}

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"gpumon/internal/sshconn"
+	"perfmon/internal/sshconn"
 )
 
 // uploadDialer 於連線過程中呼叫上傳確認的回呼函數, 確認後回傳 ok 的結果. need 決定
@@ -43,7 +43,7 @@ func uploadDialer(ok func(context.Context, int, Target, Auth) (Link, error), nee
 }
 
 func freshUpload() *sshconn.UploadRequest {
-	return &sshconn.UploadRequest{Host: "gpu01", User: "alice", Path: "/home/alice/.gpumon/gpumon", NewVersion: "0.2.0"}
+	return &sshconn.UploadRequest{Host: "gpu01", User: "alice", Path: "/home/alice/.perfmon/perfmon", NewVersion: "0.2.0"}
 }
 
 func (e *env) waitNotices(n int) []UploadNotice {
@@ -81,7 +81,7 @@ func TestUploadNoticeThenConnect(t *testing.T) {
 			e.dialer.set(uploadDialer(okDialer(ls, "alice", nvidiaDevices(0)), func(int) *sshconn.UploadRequest { return req }, nil))
 			e.m.Connect(id)
 			n := e.waitNotices(1)[0]
-			want := UploadNotice{ID: n.ID, Host: id, Name: "alice@gpu01", Path: "~/.gpumon/gpumon", Update: update, NewVersion: "0.2.0"}
+			want := UploadNotice{ID: n.ID, Host: id, Name: "alice@gpu01", Path: "~/.perfmon/perfmon", Update: update, NewVersion: "0.2.0"}
 			if update {
 				want.RemoteVersion, want.RemoteHash, want.NewHash = "0.1.0", "aaaaaaa", "bbbbbbb"
 			}

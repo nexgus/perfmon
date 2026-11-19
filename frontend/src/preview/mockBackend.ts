@@ -478,7 +478,7 @@ function at(y: number, mo: number, d: number, h: number, mi: number, sec: number
 const MB = 1024 * 1024;
 
 function rec(host: string, file: string, start: number, end: number, sizeMB: number, active = false, gaps: QueryGap[] = []): MockRecording {
-  return { path: `/data/history/${host}/${file}.gpurec`, host, start, end, size: Math.round(sizeMB * MB), active, gaps };
+  return { path: `/data/history/${host}/${file}.perfrec`, host, start, end, size: Math.round(sizeMB * MB), active, gaps };
 }
 
 const sw = "sweetener@10.90.20.55";
@@ -498,8 +498,8 @@ const recordings: MockRecording[] = scenario === "empty" ? [] : [
   rec(bo, "20261101-112035", at(2026, 11, 1, 11, 20, 35), at(2026, 11, 2, 7, 48, 10), 12.8),
 ];
 const skippedRecordings: SkippedRecording[] = scenario === "empty" ? [] : [
-  { path: `/data/history/${sw}/20260920-101010.gpurec`, size: 2048, error: "unsupported format version 3" },
-  { path: `/data/history/${bo}/20260921-090000.gpurec`, size: 0, error: "file is truncated before the end of the header" },
+  { path: `/data/history/${sw}/20260920-101010.perfrec`, size: 2048, error: "unsupported format version 3" },
+  { path: `/data/history/${bo}/20260921-090000.perfrec`, size: 0, error: "file is truncated before the end of the header" },
 ];
 
 function hostOfRecording(r: MockRecording): MockHost {
@@ -812,7 +812,7 @@ export const backend: Backend = {
   async about() {
     const windows = params.get("platform") === "windows";
     return {
-      name: "GPU Monitor",
+      name: "PerfMon",
       version: "0.1.0+3f2a9c1",
       build_date: "2026-11-05T10:42:17+08:00",
       go_version: "go1.26.0",

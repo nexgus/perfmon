@@ -9,9 +9,9 @@ import (
 	"slices"
 	"sync"
 
-	"gpumon/internal/history"
-	"gpumon/internal/protocol"
-	"gpumon/internal/recording"
+	"perfmon/internal/history"
+	"perfmon/internal/protocol"
+	"perfmon/internal/recording"
 )
 
 // recorder 管理一台主機自使用者按下連線至轉為未連線期間的記錄檔. 自動重新連線

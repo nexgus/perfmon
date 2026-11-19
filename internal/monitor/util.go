@@ -3,8 +3,8 @@ package monitor
 import (
 	"math"
 
-	"gpumon/internal/history"
-	"gpumon/internal/protocol"
+	"perfmon/internal/history"
+	"perfmon/internal/protocol"
 )
 
 // procKey 以 GPU 的 id 與 PID 識別一個程序.

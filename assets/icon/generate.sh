@@ -2,8 +2,8 @@
 # 由圖示母版 (app.svg, app-foreground.svg, tray.svg, tray-eyes.svg) 產生所有衍生圖檔,
 # 放在本目錄:
 #   app-1024.png                           應用程式圖示的 1024 x 1024 點陣圖.
-#   gpumon.icns                            macOS .app 使用的圖示.
-#   gpumon.ico                             Windows 執行檔與 msi 使用的圖示.
+#   perfmon.icns                            macOS .app 使用的圖示.
+#   perfmon.ico                             Windows 執行檔與 msi 使用的圖示.
 #   frontend/src/about/app-icon.png        關於視窗顯示的圖示, 128 x 128, 保留透明背景.
 #   tray-mac-<0-3>.png                     macOS 選單列的範本圖示 (黑色加 alpha), 44 x 44.
 #   tray-win-light-<0-3>.ico               Windows 系統匣的淺色模式圖示.
@@ -11,12 +11,12 @@
 # 系統匣圖示兩個平台共用 tray.svg 與 tray-eyes.svg, 各尺寸皆直接由 SVG 渲染, 不由大圖縮小.
 # Windows 系統匣圖示每個 .ico 含 16, 20, 24, 32, 48 像素五種尺寸, 各尺寸直接由 SVG
 # 渲染, 不由大圖縮小; Wails 依系統的小圖示尺寸 (隨螢幕縮放比例而定) 挑選其中一張.
-#   octopus-layer.png                      gpumon.icon 的前景圖層, 由 app-foreground.svg 產生.
-#   Assets.car                             macOS 26 起使用的圖示, 由 gpumon.icon 編譯.
+#   octopus-layer.png                      perfmon.icon 的前景圖層, 由 app-foreground.svg 產生.
+#   Assets.car                             macOS 26 起使用的圖示, 由 perfmon.icon 編譯.
 # 系統匣圖示的編號 0 至 3 為眨眼影格, 0 為睜眼, 3 為閉眼, 1 與 2 為眼睛以 35% 與
 # 70% 的不透明度填回.
 #
-# gpumon.icon 為 Icon Composer 建立的文件, 背景為 #1d5fd1, 預設與深色外觀相同, 前景為
+# perfmon.icon 為 Icon Composer 建立的文件, 背景為 #1d5fd1, 預設與深色外觀相同, 前景為
 # octopus-layer.png 的副本. 本腳本只編譯它, 不修改它; 章魚造型更動時, 須在 Icon
 # Composer 中以新產生的 octopus-layer.png 替換圖層並存檔, 再重新執行本腳本.
 #
@@ -33,7 +33,7 @@
 set -eo pipefail
 
 ICON_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-WORK=$(mktemp -d -t gpumon-icon)
+WORK=$(mktemp -d -t perfmon-icon)
 trap 'rm -rf "$WORK"' EXIT
 
 find_chrome() {
@@ -101,17 +101,17 @@ echo "Rendering masters..."
 render_svg "$ICON_DIR/app.svg" "$ICON_DIR/app-1024.png" 1024 00000000
 render_svg "$ICON_DIR/app-foreground.svg" "$ICON_DIR/octopus-layer.png" 1024 00000000
 
-echo "Building gpumon.icns..."
-ICONSET="$WORK/gpumon.iconset"
+echo "Building perfmon.icns..."
+ICONSET="$WORK/perfmon.iconset"
 mkdir -p "$ICONSET"
 for s in 16 32 128 256 512; do
     sips -z "$s" "$s" "$ICON_DIR/app-1024.png" --out "$ICONSET/icon_${s}x${s}.png" >/dev/null
     sips -z "$((s * 2))" "$((s * 2))" "$ICON_DIR/app-1024.png" --out "$ICONSET/icon_${s}x${s}@2x.png" >/dev/null
 done
-iconutil -c icns "$ICONSET" -o "$ICON_DIR/gpumon.icns"
+iconutil -c icns "$ICONSET" -o "$ICON_DIR/perfmon.icns"
 
-echo "Building gpumon.ico..."
-magick "$ICON_DIR/app-1024.png" -define icon:auto-resize=256,128,64,48,32,24,16 "$ICON_DIR/gpumon.ico"
+echo "Building perfmon.ico..."
+magick "$ICON_DIR/app-1024.png" -define icon:auto-resize=256,128,64,48,32,24,16 "$ICON_DIR/perfmon.ico"
 
 echo "Building about window icon..."
 magick "$ICON_DIR/app-1024.png" -resize 128x128 "$ICON_DIR/../../frontend/src/about/app-icon.png"
@@ -172,10 +172,10 @@ actool_major() {
 if [ "$(actool_major)" -ge 26 ] 2>/dev/null; then
     echo "Building Assets.car..."
     mkdir -p "$WORK/car"
-    /usr/bin/actool "$ICON_DIR/gpumon.icon" --compile "$WORK/car" \
+    /usr/bin/actool "$ICON_DIR/perfmon.icon" --compile "$WORK/car" \
         --notices --warnings --errors \
         --output-partial-info-plist "$WORK/car/partial.plist" \
-        --app-icon gpumon --enable-on-demand-resources NO --development-region en \
+        --app-icon perfmon --enable-on-demand-resources NO --development-region en \
         --target-device mac --minimum-deployment-target 13.0 --platform macosx >/dev/null
     cp "$WORK/car/Assets.car" "$ICON_DIR/Assets.car"
 else
@@ -193,4 +193,4 @@ for f in tray-win-light-0.ico tray-win-dark-3.ico; do
     echo
 done
 magick identify -format '  app-icon.png: %wx%h %[channels]\n' "$ICON_DIR/../../frontend/src/about/app-icon.png"
-magick identify "$ICON_DIR/gpumon.ico"
+magick identify "$ICON_DIR/perfmon.ico"

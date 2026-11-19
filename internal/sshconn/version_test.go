@@ -63,18 +63,18 @@ func TestParseVersionOutput(t *testing.T) {
 		hash  string
 		proto int
 	}{
-		{"gpumon 0.1.0+3f2a9c1 (protocol 1)\n", "0.1.0", "", 1},
-		{"gpumon 0.2.9+3f2a9c1 (protocol 1)\n", "0.2.9", "", 1},
-		{"gpumon 0.3.0-beta.1+3f2a9c1 (protocol 1)\n", "0.3.0-beta.1", "", 1},
-		{"gpumon 0.3.0+3f2a9c1 (protocol 1)\n", "0.3.0", "3f2a9c1", 1},
-		{"gpumon 0.3.1+3f2a9c1 (protocol 1)\n", "0.3.1", "3f2a9c1", 1},
-		{"gpumon 1.0.0-rc.1+3f2a9c1 (protocol 1)\n", "1.0.0-rc.1", "3f2a9c1", 1},
-		{"gpumon 0.2.0-beta.3+3f2a9c1-dirty (protocol 2)\n", "0.2.0-beta.3", "", 2},
-		{"gpumon 0.1.0+unknown (protocol 1)\n", "0.1.0", "", 1},
-		{"gpumon 0.1.0+unknown-dirty (protocol 12)", "0.1.0", "", 12},
-		{"gpumon 0.1.0 (protocol 1)\n", "0.1.0", "", 1},
-		{"gpumon 0.2.0-rc.1 (protocol 4)", "0.2.0-rc.1", "", 4},
-		{"gpumon 10.20.30-rc.0+abcdef0 (protocol 3)\n", "10.20.30-rc.0", "abcdef0", 3},
+		{"perfmon 0.1.0+3f2a9c1 (protocol 1)\n", "0.1.0", "", 1},
+		{"perfmon 0.2.9+3f2a9c1 (protocol 1)\n", "0.2.9", "", 1},
+		{"perfmon 0.3.0-beta.1+3f2a9c1 (protocol 1)\n", "0.3.0-beta.1", "", 1},
+		{"perfmon 0.3.0+3f2a9c1 (protocol 1)\n", "0.3.0", "3f2a9c1", 1},
+		{"perfmon 0.3.1+3f2a9c1 (protocol 1)\n", "0.3.1", "3f2a9c1", 1},
+		{"perfmon 1.0.0-rc.1+3f2a9c1 (protocol 1)\n", "1.0.0-rc.1", "3f2a9c1", 1},
+		{"perfmon 0.2.0-beta.3+3f2a9c1-dirty (protocol 2)\n", "0.2.0-beta.3", "", 2},
+		{"perfmon 0.1.0+unknown (protocol 1)\n", "0.1.0", "", 1},
+		{"perfmon 0.1.0+unknown-dirty (protocol 12)", "0.1.0", "", 12},
+		{"perfmon 0.1.0 (protocol 1)\n", "0.1.0", "", 1},
+		{"perfmon 0.2.0-rc.1 (protocol 4)", "0.2.0-rc.1", "", 4},
+		{"perfmon 10.20.30-rc.0+abcdef0 (protocol 3)\n", "10.20.30-rc.0", "abcdef0", 3},
 	}
 	for _, c := range good {
 		info, err := ParseVersionOutput(c.in)
@@ -89,25 +89,25 @@ func TestParseVersionOutput(t *testing.T) {
 	bad := []string{
 		"",
 		"\n",
-		"gpumon 0.1.0+ (protocol 1)\n",
-		"gpumon 0.1.0-dirty (protocol 1)\n",
-		"gpumon 0.1.0+3F2A9C1 (protocol 1)\n",
-		"gpumon 0.1.0+3f2a9c (protocol 1)\n",
-		"gpumon 0.1.0+3f2a9c1 (protocol 0)\n",
-		"gpumon 0.1.0+3f2a9c1 (protocol 01)\n",
-		"gpumon 0.1.0+3f2a9c1 (protocol 1)\n\n",
-		"gpumon 0.1.0+3f2a9c1 (protocol 1)\r\n",
-		"gpumon 0.1.0+3f2a9c1 (protocol 1)\nextra\n",
-		"warning\ngpumon 0.1.0+3f2a9c1 (protocol 1)\n",
-		"gpumon  0.1.0+3f2a9c1 (protocol 1)\n",
-		"gpumon 0.1.0+3f2a9c1  (protocol 1)\n",
-		"gpumon 0.1.0+3f2a9c1 (protocol  1)\n",
-		"GPUMON 0.1.0+3f2a9c1 (protocol 1)\n",
-		"gpumon 0.1.0-beta+3f2a9c1 (protocol 1)\n",
-		"gpumon 0.1.0+3f2a9c1-dirty-dirty (protocol 1)\n",
-		"gpumon 0.1.0+3f2a9c1 (protocol 1) \n",
-		"gpumon 0.1.0+3f2a9c1 (protocol 99999999999999999999)\n",
-		"bash: /home/u/.gpumon/gpumon: No such file or directory\n",
+		"perfmon 0.1.0+ (protocol 1)\n",
+		"perfmon 0.1.0-dirty (protocol 1)\n",
+		"perfmon 0.1.0+3F2A9C1 (protocol 1)\n",
+		"perfmon 0.1.0+3f2a9c (protocol 1)\n",
+		"perfmon 0.1.0+3f2a9c1 (protocol 0)\n",
+		"perfmon 0.1.0+3f2a9c1 (protocol 01)\n",
+		"perfmon 0.1.0+3f2a9c1 (protocol 1)\n\n",
+		"perfmon 0.1.0+3f2a9c1 (protocol 1)\r\n",
+		"perfmon 0.1.0+3f2a9c1 (protocol 1)\nextra\n",
+		"warning\nperfmon 0.1.0+3f2a9c1 (protocol 1)\n",
+		"perfmon  0.1.0+3f2a9c1 (protocol 1)\n",
+		"perfmon 0.1.0+3f2a9c1  (protocol 1)\n",
+		"perfmon 0.1.0+3f2a9c1 (protocol  1)\n",
+		"PERFMON 0.1.0+3f2a9c1 (protocol 1)\n",
+		"perfmon 0.1.0-beta+3f2a9c1 (protocol 1)\n",
+		"perfmon 0.1.0+3f2a9c1-dirty-dirty (protocol 1)\n",
+		"perfmon 0.1.0+3f2a9c1 (protocol 1) \n",
+		"perfmon 0.1.0+3f2a9c1 (protocol 99999999999999999999)\n",
+		"bash: /home/u/.perfmon/perfmon: No such file or directory\n",
 	}
 	for _, s := range bad {
 		if _, err := ParseVersionOutput(s); err == nil {
@@ -170,10 +170,10 @@ func TestCompareProtocol(t *testing.T) {
 }
 
 func TestIsProgramRunning(t *testing.T) {
-	const p = "/home/alice/.gpumon/gpumon"
+	const p = "/home/alice/.perfmon/perfmon"
 	out := "lrwxrwxrwx 1 alice alice 0 Nov  5 10:00 /proc/100/exe -> /usr/bin/bash\n" +
-		"lrwxrwxrwx 1 alice alice 0 Nov  5 10:00 /proc/101/exe -> /home/alice/.gpumon/gpumon.tmp\n" +
-		"lrwxrwxrwx 1 alice alice 0 Nov  5 10:00 /proc/102/exe -> /home/alice/.gpumon/gpumon2\n" +
+		"lrwxrwxrwx 1 alice alice 0 Nov  5 10:00 /proc/101/exe -> /home/alice/.perfmon/perfmon.tmp\n" +
+		"lrwxrwxrwx 1 alice alice 0 Nov  5 10:00 /proc/102/exe -> /home/alice/.perfmon/perfmon2\n" +
 		"lrwxrwxrwx 1 bob   bob   0 Nov  5 10:00 /proc/103/exe\n"
 	if isProgramRunning(out, p) {
 		t.Error("detected running without a matching line")
@@ -190,7 +190,7 @@ func TestIsProgramRunning(t *testing.T) {
 	if isProgramRunning("lrwxrwxrwx 1 a a 0 Nov  5 10:00 /proc/107/exe -> /other"+p+"\n", p) {
 		t.Error("path with prefix accepted")
 	}
-	const spaced = "/home/a b/.gpumon/gpumon"
+	const spaced = "/home/a b/.perfmon/perfmon"
 	if !isProgramRunning("lrwxrwxrwx 1 a a 0 Nov  5 10:00 /proc/108/exe -> "+spaced+"\n", spaced) {
 		t.Error("path with space not detected")
 	}
@@ -201,10 +201,10 @@ func TestIsProgramRunning(t *testing.T) {
 
 func TestShellQuote(t *testing.T) {
 	cases := map[string]string{
-		"/home/u/.gpumon/gpumon": "/home/u/.gpumon/gpumon",
-		"/home/a b/x":            "'/home/a b/x'",
-		"it's":                   `'it'\''s'`,
-		"":                       "''",
+		"/home/u/.perfmon/perfmon": "/home/u/.perfmon/perfmon",
+		"/home/a b/x":              "'/home/a b/x'",
+		"it's":                     `'it'\''s'`,
+		"":                         "''",
 	}
 	for in, want := range cases {
 		if got := shellQuote(in); got != want {

@@ -727,7 +727,7 @@ func TestDefaultDir(t *testing.T) {
 	if err != nil {
 		t.Skip(err)
 	}
-	if filepath.Base(d) != "gpumon" || !filepath.IsAbs(d) {
+	if filepath.Base(d) != "perfmon" || !filepath.IsAbs(d) {
 		t.Errorf("DefaultDir = %s", d)
 	}
 	if got := HistoryDir("/x"); got != filepath.Join("/x", "history") {

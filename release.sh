@@ -13,7 +13,7 @@
 # docs/releases/<版本>-rc.md 存在時, 於全部檢查通過後更名為正式檔名並 commit,
 # 只提交該檔, 不 push.
 #
-# 上傳的 asset 檔名去掉 commit hash, 例如 gpumon-0.1.0-windows-amd64.msi.
+# 上傳的 asset 檔名去掉 commit hash, 例如 perfmon-0.1.0-windows-amd64.msi.
 
 # 取得本檔路徑並判斷是否被 source. bash 與 zsh 取法不同, zsh 的語法以 eval 包住,
 # 否則 bash 在解析階段即報錯.
@@ -44,7 +44,7 @@ set -eo pipefail
 cd "$(dirname "$RELEASE_SCRIPT")"
 
 FORGECTL=(forgectl -s github)
-REPO=nexgus/gpumon
+REPO=nexgus/perfmon
 VERSION_FILE=internal/version/version.go
 
 # die 輸出錯誤訊息後中止.
@@ -80,8 +80,8 @@ esac
 FULL=$(bash scripts/product_commit.sh --full) \
     || die "cannot determine the full product commit hash."
 
-MSI="bin/gpumon-${VER}+${SHORT}-windows-amd64.msi"
-PKG="bin/gpumon-${VER}+${SHORT}-darwin-arm64.pkg"
+MSI="bin/perfmon-${VER}+${SHORT}-windows-amd64.msi"
+PKG="bin/perfmon-${VER}+${SHORT}-darwin-arm64.pkg"
 for f in "$MSI" "$PKG"; do
     [ -f "$f" ] || die "$f not found; run \"bash build.sh -a\" to build the installers for commit $SHORT."
 done
@@ -117,7 +117,7 @@ fi
 
 echo "Releasing $VER (commit $SHORT) to github.com/$REPO..."
 "${FORGECTL[@]}" asset upload "$REPO" "$VER" \
-    "${MSI}=gpumon-${VER}-windows-amd64.msi" \
-    "${PKG}=gpumon-${VER}-darwin-arm64.pkg"
+    "${MSI}=perfmon-${VER}-windows-amd64.msi" \
+    "${PKG}=perfmon-${VER}-darwin-arm64.pkg"
 "${FORGECTL[@]}" release create "$REPO" "$VER" -n "$NOTE" -c "$FULL"
 git fetch --tags origin

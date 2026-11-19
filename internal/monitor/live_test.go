@@ -11,25 +11,25 @@ import (
 	"testing"
 	"time"
 
-	"gpumon/internal/history"
-	"gpumon/internal/recording"
-	"gpumon/internal/settings"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/history"
+	"perfmon/internal/recording"
+	"perfmon/internal/settings"
+	"perfmon/internal/sshconn"
 )
 
 // TestLive 於實際的測試主機端到端驗證連線管理. 只在設定環境變數
-// GPUMON_LIVE_HOST=<user>@<host> 時執行. 使用本機的 ~/.ssh/config, OpenSSH 的
+// PERFMON_LIVE_HOST=<user>@<host> 時執行. 使用本機的 ~/.ssh/config, OpenSSH 的
 // known_hosts (皆唯讀) 與 ssh-agent, 程式自己的 known_hosts 指向暫存目錄內的
 // 複本, 設定與記錄檔寫入暫存目錄.
-// 結束時刪除遠端的 ~/.gpumon/.
+// 結束時刪除遠端的 ~/.perfmon/.
 func TestLive(t *testing.T) {
-	target := os.Getenv("GPUMON_LIVE_HOST")
+	target := os.Getenv("PERFMON_LIVE_HOST")
 	if target == "" {
-		t.Skip("GPUMON_LIVE_HOST is not set")
+		t.Skip("PERFMON_LIVE_HOST is not set")
 	}
 	user, addr, ok := strings.Cut(target, "@")
 	if !ok {
-		t.Fatal("GPUMON_LIVE_HOST must be user@host")
+		t.Fatal("PERFMON_LIVE_HOST must be user@host")
 	}
 	home, _ := os.UserHomeDir()
 	tmp := t.TempDir()
@@ -57,12 +57,12 @@ func TestLive(t *testing.T) {
 		sess.Run("sh -c '" + cmd + "'")
 		return strings.TrimSpace(out.String())
 	}
-	if out := run(`test -e "$HOME/.gpumon" && echo exists`); out == "exists" {
-		t.Fatal("~/.gpumon already exists on the test host; refusing to touch it")
+	if out := run(`test -e "$HOME/.perfmon" && echo exists`); out == "exists" {
+		t.Fatal("~/.perfmon already exists on the test host; refusing to touch it")
 	}
 	t.Cleanup(func() {
-		run(`rm -rf "$HOME/.gpumon"`)
-		left := run(`test -e "$HOME/.gpumon" && echo exists; pgrep -u "$(id -u)" -x gpumon`)
+		run(`rm -rf "$HOME/.perfmon"`)
+		left := run(`test -e "$HOME/.perfmon" && echo exists; pgrep -u "$(id -u)" -x perfmon`)
 		t.Logf("cleanup: remaining = %q", left)
 		if left != "" {
 			t.Errorf("cleanup left %q", left)
@@ -152,7 +152,7 @@ func TestLive(t *testing.T) {
 
 	// 終止本帳號的遠端程式, 製造非預期斷線.
 	killed := time.Now()
-	run(`pkill -u "$(id -u)" -x gpumon`)
+	run(`pkill -u "$(id -u)" -x perfmon`)
 	waitFor("reconnecting", 20*time.Second, func() bool { return state().State == StateReconnecting })
 	t.Logf("disconnect detected after %v: %q", time.Since(killed).Round(time.Millisecond), state().Reason)
 	waitFor("reconnected", 30*time.Second, func() bool { return state().State == StateConnected })
@@ -166,7 +166,7 @@ func TestLive(t *testing.T) {
 	if err := m.Disconnect(id); err != nil {
 		t.Fatal(err)
 	}
-	waitFor("remote program ended", 15*time.Second, func() bool { return run(`pgrep -u "$(id -u)" -x gpumon`) == "" })
+	waitFor("remote program ended", 15*time.Second, func() bool { return run(`pgrep -u "$(id -u)" -x perfmon`) == "" })
 	t.Log("remote program ended after disconnect")
 
 	f, err := recording.Open(path)
@@ -192,7 +192,7 @@ func TestLive(t *testing.T) {
 	if counts[recording.KindDisconnect] != 1 || discIdx < 0 || discIdx == len(recs)-1 || recs[discIdx+1].Kind != recording.KindSample {
 		t.Fatal("expected one disconnect record followed by samples")
 	}
-	files, _ := filepath.Glob(filepath.Join(recording.HostDir(dir, id), "*.gpurec"))
+	files, _ := filepath.Glob(filepath.Join(recording.HostDir(dir, id), "*.perfrec"))
 	if len(files) != 1 {
 		t.Fatalf("recording files %v", files)
 	}

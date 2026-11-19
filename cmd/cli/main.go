@@ -1,4 +1,4 @@
-// Command gpumon 為部署在遠端主機上的 GPU 取樣程式, 由本機 GUI 上傳並啟動.
+// Command perfmon 為部署在遠端主機上的 GPU 取樣程式, 由本機 GUI 上傳並啟動.
 //
 // 不帶 --loop 時輸出一行 devices 與 --steps 行 sample 後結束, 供手動除錯;
 // 帶 --loop 時持續取樣, 由 stdin 的指令控制, 供 GUI 使用. 所有輸出一律英文.
@@ -13,12 +13,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"gpumon/internal/gpu"
-	"gpumon/internal/protocol"
-	"gpumon/internal/version"
+	"perfmon/internal/gpu"
+	"perfmon/internal/protocol"
+	"perfmon/internal/version"
 )
 
-const usageText = `Usage: gpumon [options]
+const usageText = `Usage: perfmon [options]
 
 Collect GPU metrics on this host and print them as JSON Lines.
 
@@ -54,7 +54,7 @@ type options struct {
 // 用法說明 (-h).
 func parseArgs(args []string) (options, error) {
 	var o options
-	fs := flag.NewFlagSet("gpumon", flag.ContinueOnError)
+	fs := flag.NewFlagSet("perfmon", flag.ContinueOnError)
 	// 錯誤訊息與用法說明由呼叫端自行輸出, 不使用 flag 套件的預設格式.
 	fs.SetOutput(io.Discard)
 	fs.Usage = func() {}
@@ -101,7 +101,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 			printUsage(stdout)
 			return 0
 		}
-		fmt.Fprintf(stderr, "gpumon: %v\n", err)
+		fmt.Fprintf(stderr, "perfmon: %v\n", err)
 		printUsage(stderr)
 		return 2
 	}
@@ -111,7 +111,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 		printUsage(stdout)
 		return 0
 	case o.showVersion:
-		fmt.Fprintf(stdout, "gpumon %s (protocol %d)\n", version.RemoteFull(), protocol.Version)
+		fmt.Fprintf(stdout, "perfmon %s (protocol %d)\n", version.RemoteFull(), protocol.Version)
 		return 0
 	}
 
@@ -120,7 +120,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	signal.Notify(make(chan os.Signal, 1), syscall.SIGPIPE)
 
 	logf := func(format string, args ...any) {
-		fmt.Fprintf(stderr, "gpumon: "+format+"\n", args...)
+		fmt.Fprintf(stderr, "perfmon: "+format+"\n", args...)
 	}
 	col := gpu.Open(logf)
 	hostname, _ := os.Hostname()

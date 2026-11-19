@@ -209,7 +209,7 @@ export interface KeySetupResult {
 
 // UploadNotice 為上傳遠端程式之前的通知. update 為真表示更新, 為假表示首次上傳;
 // remote_version 與 remote_hash 於首次上傳時為空字串; 兩個版本皆為不含內容雜湊值的
-// 程式版號, remote_hash 於遠端沒有內容雜湊值時為 unknown. path 恆為 ~/.gpumon/gpumon.
+// 程式版號, remote_hash 於遠端沒有內容雜湊值時為 unknown. path 恆為 ~/.perfmon/perfmon.
 export interface UploadNotice {
   id: string;
   host: string;

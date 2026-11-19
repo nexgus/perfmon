@@ -1,5 +1,5 @@
-// Package recording 實作記錄檔 (.gpurec) 的寫入與讀取. 格式定義見 docs/recording-format-v1.md
-// 與 docs/recording-format-v2.md; 寫入一律為版本 2, 版本 1 只供讀取.
+// Package recording 實作記錄檔 (.perfrec) 的寫入與讀取. 格式定義見 docs/recording-format-v2.md,
+// 只支援版本 2.
 package recording
 
 import (
@@ -10,11 +10,10 @@ import (
 )
 
 const (
-	magic     = "GPUMONRC"
+	magic     = "PERFMONR"
 	fixedSize = 16
 
-	// version1 與 version2 為固定區位移 8 的格式版本.
-	version1 = 1
+	// version2 為固定區位移 8 的格式版本.
 	version2 = 2
 )
 
@@ -26,8 +25,6 @@ const (
 	KindSample Kind = 1
 	// KindError 為錯誤記錄, Text 為 error 訊息的文字.
 	KindError Kind = 2
-	// KindProcesses 為版本 1 的程序記錄, Text 為該次取樣完整的程序 JSON 陣列.
-	KindProcesses Kind = 4
 	// KindDisconnect 為斷線記錄, Text 為斷線原因.
 	KindDisconnect Kind = 5
 	// KindGPUProcs 為版本 2 的 GPU 程序變動記錄, 內容在 GPUProcs.
@@ -38,7 +35,7 @@ const (
 
 var (
 	// ErrNotRecording 表示檔案的識別字串不符.
-	ErrNotRecording = errors.New("recording: not a gpurec file (bad magic)")
+	ErrNotRecording = errors.New("recording: not a perfrec file (bad magic)")
 	// ErrNoGPU 表示 devices 訊息的 GPU 張數為 0, 此時不建立記錄檔.
 	ErrNoGPU = errors.New("recording: devices message has no GPU")
 )
@@ -227,7 +224,7 @@ func SampleValues(ids []int, gpus []GPUSample) []GPUValues {
 	return out
 }
 
-// Record 為讀取端取得的一筆記錄. 版本 1 的接續記錄已併入所屬的記錄.
+// Record 為讀取端取得的一筆記錄.
 type Record struct {
 	Kind Kind
 	// Time 為時刻, 單位為微秒.
@@ -236,7 +233,7 @@ type Record struct {
 	IntervalMS uint32
 	// GPUs 僅取樣記錄有值, 順序與說明區 devices.gpus 相同.
 	GPUs []GPUValues
-	// Text 在錯誤記錄與斷線記錄為完整文字, 在版本 1 的程序記錄為完整的 JSON 陣列.
+	// Text 僅錯誤記錄與斷線記錄有值, 為完整文字.
 	Text string
 	// GPUProcs 僅 GPU 程序變動記錄有值.
 	GPUProcs []GPUProc

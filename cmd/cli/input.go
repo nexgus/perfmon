@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 // shorthandHelp 為簡寫指令 /help 輸出到 stderr 的說明.

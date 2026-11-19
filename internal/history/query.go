@@ -8,7 +8,7 @@ import (
 	"math/bits"
 	"sort"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 const (

@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 // drmGPU 為一張以 sysfs 取樣的 AMD (amdgpu) 或 Intel (i915, xe) GPU.

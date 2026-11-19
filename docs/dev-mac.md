@@ -22,7 +22,7 @@ xcode-select --install
 
 ```sh
 cd ~
-git clone https://github.com/nexgus/gpumon.git
+git clone https://github.com/nexgus/perfmon.git
 ```
 
 ## 3. 安裝建置工具
@@ -94,7 +94,7 @@ uv tool update-shell
 ### 4.2 將 graphify 設定至本專案
 
 ```sh
-cd ~/gpumon
+cd ~/perfmon
 graphify claude install
 ```
 
@@ -108,7 +108,7 @@ graphify claude install
 ### 4.3 建立知識圖譜
 
 ```sh
-cd ~/gpumon
+cd ~/perfmon
 graphify update .
 ```
 
@@ -119,14 +119,14 @@ graphify update .
 開發期間建置執行檔:
 
 ```sh
-cd ~/gpumon
+cd ~/perfmon
 bash build.sh
 ```
 
 建置執行檔並打包安裝包:
 
 ```sh
-cd ~/gpumon
+cd ~/perfmon
 bash build.sh --all
 ```
 
@@ -139,12 +139,12 @@ bash build.sh --all
 
 | 檔案 | 用途 | 產生的指令 |
 |---|---|---|
-| `gpumon-<版本>-linux-amd64.bin` | 遠端程式. 這個程式已內嵌於 GUI, 不需另行處理. | 兩者皆產生 |
-| `gpumon-<版本>-darwin-arm64` | macOS 版 GUI. | 兩者皆產生 |
-| `gpumon-<版本>-windows-amd64.exe` | Windows 版 GUI. | 兩者皆產生 |
-| `gpumon` | 指向本次建置的 macOS 版 GUI 的符號連結 (symbolic link). | 兩者皆產生 |
-| `gpumon-<版本>-darwin-arm64.app` | macOS 的應用程式. | 僅 `bash build.sh --all` |
-| `gpumon-<版本>-darwin-arm64.pkg` | macOS 的安裝檔, 把應用程式安裝至 "應用程式" 資料夾. | 僅 `bash build.sh --all` |
-| `gpumon-<版本>-windows-amd64.msi` | Windows 的安裝檔. | 僅 `bash build.sh --all` |
+| `perfmon-<版本>-linux-amd64.bin` | 遠端程式. 這個程式已內嵌於 GUI, 不需另行處理. | 兩者皆產生 |
+| `perfmon-<版本>-darwin-arm64` | macOS 版 GUI. | 兩者皆產生 |
+| `perfmon-<版本>-windows-amd64.exe` | Windows 版 GUI. | 兩者皆產生 |
+| `perfmon` | 指向本次建置的 macOS 版 GUI 的符號連結 (symbolic link). | 兩者皆產生 |
+| `perfmon-<版本>-darwin-arm64.app` | macOS 的應用程式. | 僅 `bash build.sh --all` |
+| `perfmon-<版本>-darwin-arm64.pkg` | macOS 的安裝檔, 把應用程式安裝至 "應用程式" 資料夾. | 僅 `bash build.sh --all` |
+| `perfmon-<版本>-windows-amd64.msi` | Windows 的安裝檔. | 僅 `bash build.sh --all` |
 
 再次建置時, 腳本會先把 `bin/` 內的舊產出依版本搬到 `bin/archive/<版本>/`, 再產生新的產出.

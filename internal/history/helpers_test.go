@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 const (

@@ -16,21 +16,21 @@ import (
 
 	"github.com/pkg/sftp"
 
-	"gpumon/internal/remotebin"
+	"perfmon/internal/remotebin"
 )
 
 // TestLive 於實際的測試主機驗證部署流程. 只在設定環境變數
-// GPUMON_LIVE_HOST=<user>@<host> 時執行; 使用本機的 ~/.ssh/config, OpenSSH 的
+// PERFMON_LIVE_HOST=<user>@<host> 時執行; 使用本機的 ~/.ssh/config, OpenSSH 的
 // known_hosts (皆唯讀) 與 ssh-agent, 程式自己的 known_hosts 指向暫存目錄內的
-// 複本. 結束時刪除遠端的 ~/.gpumon/.
+// 複本. 結束時刪除遠端的 ~/.perfmon/.
 func TestLive(t *testing.T) {
-	target := os.Getenv("GPUMON_LIVE_HOST")
+	target := os.Getenv("PERFMON_LIVE_HOST")
 	if target == "" {
-		t.Skip("GPUMON_LIVE_HOST is not set")
+		t.Skip("PERFMON_LIVE_HOST is not set")
 	}
 	userName, host, ok := strings.Cut(target, "@")
 	if !ok {
-		t.Fatal("GPUMON_LIVE_HOST must be user@host")
+		t.Fatal("PERFMON_LIVE_HOST must be user@host")
 	}
 	home, _ := os.UserHomeDir()
 	tmp := t.TempDir()
@@ -74,7 +74,7 @@ func TestLive(t *testing.T) {
 		}
 		defer c2.Close()
 		running, err := c2.programRunning(ctx, path.Join(dir, RemoteName), 10*time.Second)
-		t.Logf("cleanup: gpumon running = %v (%v)", running, err)
+		t.Logf("cleanup: perfmon running = %v (%v)", running, err)
 		s2, err := sftp.NewClient(c2.SSH())
 		if err != nil {
 			t.Errorf("cleanup sftp: %v", err)
@@ -143,7 +143,7 @@ func TestLive(t *testing.T) {
 	t.Logf("equal: uploaded=%v remote=%s", dep.Uploaded, dep.Remote.Version)
 
 	// 遠端較低且未執行, 覆寫. 內容於尾端附加位元組, 使其與原檔不同.
-	bin2 := append(append([]byte(nil), bin...), []byte("gpumon-live-test-padding")...)
+	bin2 := append(append([]byte(nil), bin...), []byte("perfmon-live-test-padding")...)
 	dep, err = c.Deploy(ctx, DeployOptions{Binary: bin2, GUIVersion: "0.2.0"})
 	if err != nil || !dep.Uploaded || size() != int64(len(bin2)) {
 		t.Fatalf("lower not running: %+v %v", dep, err)
@@ -170,7 +170,7 @@ func TestLive(t *testing.T) {
 	p.Wait()
 
 	// 遠端的協定版本高於 GUI: 先以較高的 GUI 版號上傳一個回報協定版本 2 的腳本.
-	script := []byte("#!/bin/sh\necho 'gpumon 0.1.0+unknown (protocol 2)'\n")
+	script := []byte("#!/bin/sh\necho 'perfmon 0.1.0+unknown (protocol 2)'\n")
 	time.Sleep(500 * time.Millisecond)
 	if dep, err = c.Deploy(ctx, DeployOptions{Binary: script, GUIVersion: "0.3.0"}); err != nil || !dep.Uploaded {
 		t.Fatalf("upload script: %+v %v", dep, err)
@@ -228,16 +228,16 @@ func TestLive(t *testing.T) {
 
 // TestLiveConfirmUpload 於實際的測試主機驗證上傳前的確認: 首次上傳與更新皆呼叫
 // 確認回呼函數, 回呼函數返回前遠端沒有任何寫入, 等待時間超過遠端指令的逾時上限
-// 仍不逾時, 確認後上傳成功並收到 devices 訊息. 只在設定 GPUMON_LIVE_HOST 時執行.
-// 遠端目錄改為家目錄下專用的暫時目錄, 不碰 ~/.gpumon/, 結束時刪除該目錄.
+// 仍不逾時, 確認後上傳成功並收到 devices 訊息. 只在設定 PERFMON_LIVE_HOST 時執行.
+// 遠端目錄改為家目錄下專用的暫時目錄, 不碰 ~/.perfmon/, 結束時刪除該目錄.
 func TestLiveConfirmUpload(t *testing.T) {
-	target := os.Getenv("GPUMON_LIVE_HOST")
+	target := os.Getenv("PERFMON_LIVE_HOST")
 	if target == "" {
-		t.Skip("GPUMON_LIVE_HOST is not set")
+		t.Skip("PERFMON_LIVE_HOST is not set")
 	}
 	userName, host, ok := strings.Cut(target, "@")
 	if !ok {
-		t.Fatal("GPUMON_LIVE_HOST must be user@host")
+		t.Fatal("PERFMON_LIVE_HOST must be user@host")
 	}
 	home, _ := os.UserHomeDir()
 	tmp := t.TempDir()
@@ -248,7 +248,7 @@ func TestLiveConfirmUpload(t *testing.T) {
 	cfg := Config{Host: host, User: userName, KnownHostsPath: kh}
 	ctx := context.Background()
 
-	testDir := fmt.Sprintf(".gpumon-livetest-%d", time.Now().UnixNano())
+	testDir := fmt.Sprintf(".perfmon-livetest-%d", time.Now().UnixNano())
 	old, oldKeepalive := remoteDir, confirmKeepalive
 	remoteDir = testDir
 	// 縮短 keepalive 的間隔, 使等待確認期間實際送出 keepalive 並收到 OpenSSH 的回覆.

@@ -4,7 +4,7 @@ import (
 	"math"
 	"slices"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 // maximaFields 為整個記錄檔最大值所涵蓋的欄位.

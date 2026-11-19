@@ -10,12 +10,12 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
-	"gpumon/internal/appinfo"
-	"gpumon/internal/history"
-	"gpumon/internal/monitor"
-	"gpumon/internal/recording"
-	"gpumon/internal/settings"
-	"gpumon/internal/version"
+	"perfmon/internal/appinfo"
+	"perfmon/internal/history"
+	"perfmon/internal/monitor"
+	"perfmon/internal/recording"
+	"perfmon/internal/settings"
+	"perfmon/internal/version"
 )
 
 func sshDir() (string, error) {

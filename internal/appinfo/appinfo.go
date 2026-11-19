@@ -1,10 +1,10 @@
 // Package appinfo 提供前端查詢應用程式名稱與版本的 Wails service.
 package appinfo
 
-import "gpumon/internal/version"
+import "perfmon/internal/version"
 
 // Name 為應用程式顯示名稱, 用於視窗標題與安裝包的產品名稱.
-const Name = "GPU Monitor"
+const Name = "PerfMon"
 
 // Service 為綁定至前端的 service, 不含狀態.
 type Service struct{}

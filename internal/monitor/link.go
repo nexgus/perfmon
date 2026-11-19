@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"gpumon/internal/settings"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/settings"
+	"perfmon/internal/sshconn"
 )
 
 // Target 為連線一台主機所需的設定.

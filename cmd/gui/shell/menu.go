@@ -3,7 +3,7 @@ package shell
 import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 
-	"gpumon/internal/appinfo"
+	"perfmon/internal/appinfo"
 )
 
 // 主選單依規格 6.2 "主選單": 只含各平台慣例上應有的項目, 不重複視窗內已有的功能.
@@ -21,7 +21,7 @@ func (s *Shell) item(key string, onClick func()) *application.MenuItem {
 
 func separator() *application.MenuItem { return application.NewMenuItemSeparator() }
 
-// appMenu 為 macOS 的選單列, 依序為 GPU Monitor, Edit, Window, Help.
+// appMenu 為 macOS 的選單列, 依序為 PerfMon, Edit, Window, Help.
 func (s *Shell) appMenu() *application.Menu {
 	app := application.NewMenuFromItems(
 		s.item("menu.about", func() { s.OpenAbout(TabAbout) }),

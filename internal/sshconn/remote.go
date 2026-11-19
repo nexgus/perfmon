@@ -16,16 +16,16 @@ import (
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 
-	"gpumon/internal/protocol"
-	"gpumon/internal/remotebin"
-	"gpumon/internal/version"
+	"perfmon/internal/protocol"
+	"perfmon/internal/remotebin"
+	"perfmon/internal/version"
 )
 
 // RemoteDir 與 RemoteName 為遠端程式於遠端家目錄下的位置, 不可變更.
 const (
-	RemoteDir     = ".gpumon"
-	RemoteName    = "gpumon"
-	remoteTmpName = "gpumon.tmp"
+	RemoteDir     = ".perfmon"
+	RemoteName    = "perfmon"
+	remoteTmpName = "perfmon.tmp"
 )
 
 // remoteDir 為部署實際使用的目錄名稱, 恆為 RemoteDir. 只有實機測試改為其他名稱,
@@ -64,7 +64,7 @@ type UploadRequest struct {
 	// Host 為連線目標的顯示名稱, 即 Config.Host; User 為實際登入的使用者名稱.
 	Host string
 	User string
-	// Path 為遠端程式的完整路徑 <家目錄>/.gpumon/gpumon.
+	// Path 為遠端程式的完整路徑 <家目錄>/.perfmon/perfmon.
 	Path string
 	// Update 為真表示更新, 即遠端的程式版號低於 GUI, 或兩者相等而內容雜湊值不同,
 	// 且遠端程式未在執行; 為假表示首次上傳, 即無法取得遠端的程式版號.
@@ -112,7 +112,7 @@ func (o DeployOptions) withDefaults() DeployOptions {
 type Deployment struct {
 	// Home 為遠端帳號家目錄的絕對路徑.
 	Home string
-	// Path 為遠端程式的完整路徑 <Home>/.gpumon/gpumon.
+	// Path 為遠端程式的完整路徑 <Home>/.perfmon/perfmon.
 	Path string
 	// Remote 為上傳前自遠端程式 --version 取得的資訊; 無法取得時為 nil.
 	Remote *RemoteInfo
@@ -146,7 +146,7 @@ func (c *Client) Deploy(ctx context.Context, opts DeployOptions) (*Deployment, e
 	}
 	if platform != requiredPlatform {
 		return nil, newError(KindPlatform, nil,
-			"%s is %q. GPU Monitor supports only Linux x86_64 hosts", c.Host, platform)
+			"%s is %q. PerfMon supports only Linux x86_64 hosts", c.Host, platform)
 	}
 
 	out, code, err = c.run(ctx, shCommand(`printf %s "$HOME"`), opts.CommandTimeout)
@@ -216,8 +216,8 @@ func (c *Client) Deploy(ctx context.Context, opts DeployOptions) (*Deployment, e
 
 	if compareProtocol(dep.Protocol, opts.GUIProtocol) == protocolNewer {
 		return nil, newError(KindProtocolTooNew, nil,
-			"The GPU Monitor program on %s (version %s, protocol %d) is newer than this GPU Monitor "+
-				"(protocol %d). Please update GPU Monitor on this computer",
+			"The PerfMon program on %s (version %s, protocol %d) is newer than this PerfMon "+
+				"(protocol %d). Please update PerfMon on this computer",
 			c.Host, dep.Remote.Version, dep.Protocol, opts.GUIProtocol)
 	}
 	return dep, nil

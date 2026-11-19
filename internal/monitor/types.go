@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"gpumon/internal/protocol"
-	"gpumon/internal/settings"
+	"perfmon/internal/protocol"
+	"perfmon/internal/settings"
 )
 
 // State 為主機的連線狀態.
@@ -113,7 +113,7 @@ type UploadNotice struct {
 	// Host 為主機的 ID, Name 為顯示名稱.
 	Host string `json:"host"`
 	Name string `json:"name"`
-	// Path 為遠端的放置路徑, 恆為 ~/.gpumon/gpumon.
+	// Path 為遠端的放置路徑, 恆為 ~/.perfmon/perfmon.
 	Path string `json:"path"`
 	// Update 為真表示更新, 為假表示首次上傳.
 	Update bool `json:"update"`

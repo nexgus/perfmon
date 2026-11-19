@@ -1,5 +1,5 @@
 #!/bin/bash
-# 建置 gpumon 的遠端程式與本機 GUI "GPU Monitor", 傳入 --all 時另行打包安裝包.
+# 建置 perfmon 的遠端程式與本機 GUI "PerfMon", 傳入 --all 時另行打包安裝包.
 # 全部於 macOS 上建置, 可用 bash 或 zsh 執行.
 #
 # 用法: bash build.sh [-a|--all]
@@ -12,13 +12,13 @@
 # frontend/src/third-party-licenses.json, 產生過程不需網路.
 #
 # 產出放 bin/, 檔名帶完整版本字串 x.y.z[-stage.N]+<commit>[-dirty]:
-#   gpumon-<完整版本>-linux-amd64.bin
-#   gpumon-<完整版本>-darwin-arm64
-#   gpumon-<完整版本>-windows-amd64.exe
-#   gpumon-<完整版本>-darwin-arm64.app    (--all)
-#   gpumon-<完整版本>-darwin-arm64.pkg    (--all)
-#   gpumon-<完整版本>-windows-amd64.msi   (--all)
-#   gpumon                                指向本次 darwin 執行檔的符號連結
+#   perfmon-<完整版本>-linux-amd64.bin
+#   perfmon-<完整版本>-darwin-arm64
+#   perfmon-<完整版本>-windows-amd64.exe
+#   perfmon-<完整版本>-darwin-arm64.app    (--all)
+#   perfmon-<完整版本>-darwin-arm64.pkg    (--all)
+#   perfmon-<完整版本>-windows-amd64.msi   (--all)
+#   perfmon                                指向本次 darwin 執行檔的符號連結
 # 建置前先將 bin/ 內的舊產出依版本段歸檔至 bin/archive/<版本>/.
 
 # 取得本檔路徑並判斷是否被 source. bash 與 zsh 取法不同, zsh 的語法以 eval 包住,
@@ -77,8 +77,8 @@ while [ "$#" -gt 0 ]; do
 done
 
 OUT_DIR=bin
-APP_NAME="GPU Monitor"
-BUNDLE_ID=io.github.nexgus.gpumon
+APP_NAME="PerfMon"
+BUNDLE_ID=io.github.nexgus.perfmon
 # macOS 最低版本取 Go 1.27 連結器支援的最舊版本, 見
 # $(go env GOROOT)/src/cmd/link/internal/ld/macho.go 的 macOS 預設值. 升級 Go 後
 # 若出現 "built for newer macOS version than being linked" 警告, 須同步調整.
@@ -114,16 +114,16 @@ fi
 PUREVER="${VER%%-*}"
 # 建置時間為 ISO 8601 extended 格式, BSD date 的 %z 不含冒號, 以 sed 補上.
 BUILDDATE=$(date +%Y-%m-%dT%H:%M:%S%z | sed -E 's/([+-][0-9]{2})([0-9]{2})$/\1:\2/')
-VERLD="-X gpumon/internal/version.GitCommitHash=${COMMIT} -X gpumon/internal/version.BuildDate=${BUILDDATE}"
+VERLD="-X perfmon/internal/version.GitCommitHash=${COMMIT} -X perfmon/internal/version.BuildDate=${BUILDDATE}"
 
-CLI_OUT="gpumon-${FULLVER}-linux-amd64.bin"
-MAC_OUT="gpumon-${FULLVER}-darwin-arm64"
-WIN_OUT="gpumon-${FULLVER}-windows-amd64.exe"
-APP_OUT="gpumon-${FULLVER}-darwin-arm64.app"
-PKG_OUT="gpumon-${FULLVER}-darwin-arm64.pkg"
-MSI_OUT="gpumon-${FULLVER}-windows-amd64.msi"
+CLI_OUT="perfmon-${FULLVER}-linux-amd64.bin"
+MAC_OUT="perfmon-${FULLVER}-darwin-arm64"
+WIN_OUT="perfmon-${FULLVER}-windows-amd64.exe"
+APP_OUT="perfmon-${FULLVER}-darwin-arm64.app"
+PKG_OUT="perfmon-${FULLVER}-darwin-arm64.pkg"
+MSI_OUT="perfmon-${FULLVER}-windows-amd64.msi"
 
-WORK_DIR=$(mktemp -d -t gpumon-build)
+WORK_DIR=$(mktemp -d -t perfmon-build)
 trap 'rm -rf "$WORK_DIR"' EXIT
 
 # require_command 確認指定的命令存在, 否則中止.
@@ -155,7 +155,7 @@ function ensure_npm_deps {
 }
 
 # archive_old_outputs 將 bin/ 內的舊產出依檔名中的版本段搬至
-# bin/archive/<版本>/, 同名者覆蓋. 不符合 gpumon-* 樣式的項目原地保留, 版本段
+# bin/archive/<版本>/, 同名者覆蓋. 不符合 perfmon-* 樣式的項目原地保留, 版本段
 # 無法解析者歸入 bin/archive/unknown/.
 function archive_old_outputs {
     mkdir -p "$OUT_DIR/archive"
@@ -164,10 +164,10 @@ function archive_old_outputs {
         base=$(basename "$f")
         case "$base" in
             archive) continue ;;
-            gpumon-*) ;;
+            perfmon-*) ;;
             *) continue ;;
         esac
-        ver=$(printf '%s\n' "$base" | sed -E -n 's/^gpumon-([0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?(\+([0-9a-f]{7}|unknown)(-dirty)?)?)-.*/\1/p')
+        ver=$(printf '%s\n' "$base" | sed -E -n 's/^perfmon-([0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?(\+([0-9a-f]{7}|unknown)(-dirty)?)?)-.*/\1/p')
         if [ -z "$ver" ]; then
             ver=unknown
         fi
@@ -180,19 +180,19 @@ function archive_old_outputs {
 
 # build_frontend 以 Vite 建置前端, 並將實際打包進產出的 npm 套件寫入 $1.
 function build_frontend {
-    (cd frontend && GPUMON_NPM_PACKAGES="$1" npm run build)
+    (cd frontend && PERFMON_NPM_PACKAGES="$1" npm run build)
 }
 
 # build_app 組出 .app bundle. 圖示有兩份, CFBundleIconName 指向 assets/icon/Assets.car
-# (含深色外觀), CFBundleIconFile 指向 assets/icon/gpumon.icns, 兩個鍵與 actool 產生的
+# (含深色外觀), CFBundleIconFile 指向 assets/icon/perfmon.icns, 兩個鍵與 actool 產生的
 # Info.plist 片段相同.
 function build_app {
     local app="$OUT_DIR/$APP_OUT"
     rm -rf "$app"
     mkdir -p "$app/Contents/MacOS"
     mkdir -p "$app/Contents/Resources"
-    cp "$OUT_DIR/$MAC_OUT" "$app/Contents/MacOS/gpumon"
-    cp assets/icon/gpumon.icns "$app/Contents/Resources/gpumon.icns"
+    cp "$OUT_DIR/$MAC_OUT" "$app/Contents/MacOS/perfmon"
+    cp assets/icon/perfmon.icns "$app/Contents/Resources/perfmon.icns"
     cp assets/icon/Assets.car "$app/Contents/Resources/Assets.car"
     cat > "$app/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -206,11 +206,11 @@ function build_app {
 	<key>CFBundleDisplayName</key>
 	<string>${APP_NAME}</string>
 	<key>CFBundleExecutable</key>
-	<string>gpumon</string>
+	<string>perfmon</string>
 	<key>CFBundleIconFile</key>
-	<string>gpumon</string>
+	<string>perfmon</string>
 	<key>CFBundleIconName</key>
-	<string>gpumon</string>
+	<string>perfmon</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleVersion</key>
@@ -222,7 +222,7 @@ function build_app {
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>GPU Monitor 需要連線至與這台電腦位於同一個網路的主機，才能讀取該主機的 GPU 狀態。</string>
+	<string>PerfMon 需要連線至與這台電腦位於同一個網路的主機，才能讀取該主機的 GPU 狀態。</string>
 </dict>
 </plist>
 PLIST
@@ -239,7 +239,7 @@ PLIST
 # identifier 副本.
 function build_pkg {
     local root="$WORK_DIR/pkgroot" plist="$WORK_DIR/component.plist"
-    local component="$WORK_DIR/gpumon-component.pkg" dist="$WORK_DIR/distribution.xml"
+    local component="$WORK_DIR/perfmon-component.pkg" dist="$WORK_DIR/distribution.xml"
     rm -rf "$root"
     mkdir -p "$root"
     cp -R "$OUT_DIR/$APP_OUT" "$root/${APP_NAME}.app"
@@ -274,7 +274,7 @@ go mod download
 go -C scripts/licgen mod download
 go -C scripts/syso mod download
 
-echo "=== Building gpumon ${FULLVER} ==="
+echo "=== Building perfmon ${FULLVER} ==="
 mkdir -p "$OUT_DIR"
 echo "Archiving previous outputs..."
 archive_old_outputs
@@ -282,7 +282,7 @@ archive_old_outputs
 echo "Building remote program (linux/amd64)..."
 GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -buildvcs=false \
     -ldflags "-s -w" -o "$OUT_DIR/$CLI_OUT" ./cmd/cli
-cp "$OUT_DIR/$CLI_OUT" internal/remotebin/gpumon.bin
+cp "$OUT_DIR/$CLI_OUT" internal/remotebin/perfmon.bin
 
 echo "Generating frontend bindings..."
 go tool wails3 generate bindings -ts -clean=true -silent -d frontend/bindings ./cmd/gui
@@ -310,14 +310,14 @@ GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 \
     go build -trimpath -tags production \
     -ldflags "-s -w -extldflags '-mmacosx-version-min=${MACOS_MIN}' ${VERLD}" \
     -o "$OUT_DIR/$MAC_OUT" ./cmd/gui
-# 以相對路徑建立指向本次 macOS 執行檔的符號連結, 供直接以 bin/gpumon 執行最新的
+# 以相對路徑建立指向本次 macOS 執行檔的符號連結, 供直接以 bin/perfmon 執行最新的
 # 建置; 既有的連結由新的連結取代.
-ln -sfn "$MAC_OUT" "$OUT_DIR/gpumon"
+ln -sfn "$MAC_OUT" "$OUT_DIR/perfmon"
 
-# 由 assets/icon/gpumon.ico 產生只含圖示資源的 .syso, 檔名帶 windows_amd64 使 Go
+# 由 assets/icon/perfmon.ico 產生只含圖示資源的 .syso, 檔名帶 windows_amd64 使 Go
 # 只在該平台連結. 所需的 module 皆已在本機, 以 GOPROXY=off 確保不連網.
 echo "Generating Windows icon resource..."
-GOPROXY=off go -C scripts/syso run . -ico "$ROOT_DIR/assets/icon/gpumon.ico" \
+GOPROXY=off go -C scripts/syso run . -ico "$ROOT_DIR/assets/icon/perfmon.ico" \
     -out "$ROOT_DIR/cmd/gui/rsrc_windows_amd64.syso"
 
 echo "Building GUI (windows/amd64)..."
@@ -339,7 +339,7 @@ echo "Built artifacts (${OUT_DIR}/):"
 for f in "$CLI_OUT" "$MAC_OUT" "$WIN_OUT"; do
     echo "  $f"
 done
-echo "  gpumon -> $MAC_OUT"
+echo "  perfmon -> $MAC_OUT"
 if [ "$BUILD_ALL" = 1 ]; then
     for f in "$APP_OUT" "$PKG_OUT" "$MSI_OUT"; do
         echo "  $f"

@@ -9,18 +9,17 @@ import (
 	"os"
 )
 
-// File 為開啟供讀取的記錄檔, 版本 1 與版本 2 皆可. 所有讀取皆以 ReadAt 進行, 不將整個檔案
+// File 為開啟供讀取的記錄檔. 所有讀取皆以 ReadAt 進行, 不將整個檔案
 // 讀入記憶體, 可由多個 goroutine 同時使用, 且檔案可同時被 Writer 附加. 每次查詢以當下的
-// 檔案長度為準, 版本 2 檔尾不完整的區塊與版本 1 檔尾寫入未完成的記錄皆略過.
+// 檔案長度為準, 檔尾不完整的區塊略過.
 type File struct {
 	f       *os.File
 	version uint16
 	hdr     Header
 	ids     []int
 	n       int
-	// base 為記錄區的起點; r 為版本 1 每筆記錄的長度.
+	// base 為記錄區的起點.
 	base int64
-	r    int64
 }
 
 // Open 開啟記錄檔. 識別字串不符時回傳 ErrNotRecording, 格式版本不認得時回傳 *UnsupportedVersionError.
@@ -50,7 +49,7 @@ func openFile(f *os.File) (*File, error) {
 		return nil, ErrNotRecording
 	}
 	v := le.Uint16(fixed[8:])
-	if v != version1 && v != version2 {
+	if v != version2 {
 		return nil, &UnsupportedVersionError{Version: v}
 	}
 	n := int(le.Uint16(fixed[10:]))
@@ -80,7 +79,6 @@ func openFile(f *os.File) (*File, error) {
 		ids:     ids,
 		n:       n,
 		base:    fixedSize + m,
-		r:       int64(v1RecordHeaderSize + v1GPUBlockSize*n),
 	}, nil
 }
 
@@ -108,12 +106,9 @@ func (rf *File) areaSize() (int64, error) {
 	return max(st.Size()-rf.base, 0), nil
 }
 
-// TimeRange 回傳檔案的起訖時刻. 版本 2 為第一個有效區塊的第一筆記錄時刻與最後一個有效區塊的
-// 最後一筆記錄時刻, 版本 1 為第一筆與最後一筆完整記錄的時刻. 沒有任何記錄時 ok 為假.
+// TimeRange 回傳檔案的起訖時刻. 為第一個有效區塊的第一筆記錄時刻與最後一個有效區塊的
+// 最後一筆記錄時刻. 沒有任何記錄時 ok 為假.
 func (rf *File) TimeRange() (first, last int64, ok bool, err error) {
-	if rf.version == version1 {
-		return rf.v1TimeRange()
-	}
 	size, err := rf.areaSize()
 	if err != nil {
 		return 0, 0, false, err
@@ -129,7 +124,7 @@ func (rf *File) TimeRange() (first, last int64, ok bool, err error) {
 	return fh.tFirst, lh.tLast, true, nil
 }
 
-// Iter 以段為單位依序讀取記錄. 版本 2 的一段為一個區塊, 版本 1 的一段為固定筆數的記錄.
+// Iter 以段為單位依序讀取記錄. 一段為一個區塊.
 // Next 由定位處往後讀, Prev 由定位處往前讀, 兩者互不影響. 每段的記錄依寫入的先後排列.
 // 讀取以 SeekTime 當下的檔案長度為準, 之後附加的內容不讀取.
 type Iter struct {
@@ -137,7 +132,7 @@ type Iter struct {
 	withProcs bool
 	size      int64
 
-	// 版本 2 的 fwd 為 Next 開始搜尋的位移, back 為 Prev 所讀區塊的結尾上限, backHdr 為位於
+	// fwd 為 Next 開始搜尋的位移, back 為 Prev 所讀區塊的結尾上限, backHdr 為位於
 	// back 的區塊開頭 (未知時為 nil), cached 為 SeekTime 時已讀取的區塊, last 為最近一次
 	// 回傳的區塊.
 	fwd     int64
@@ -146,11 +141,6 @@ type Iter struct {
 	cached  *blockHeader
 	cachedC []byte
 	last    blockHeader
-
-	// 版本 1 的 v1Fwd 與 v1Back 為往後與往前讀取的記錄索引, v1Total 為記錄筆數.
-	v1Fwd   int
-	v1Back  int
-	v1Total int
 }
 
 // SeekTime 回傳定位於時刻 t 的 Iter. 第一次 Next 回傳含有第一筆時刻不早於 t 的記錄的那一段,
@@ -162,16 +152,6 @@ func (rf *File) SeekTime(t int64, withProcs bool) (*Iter, error) {
 		return nil, err
 	}
 	it := &Iter{rf: rf, withProcs: withProcs, size: size}
-	if rf.version == version1 {
-		n := int(size / rf.r)
-		i, err := rf.v1LowerBound(t, n)
-		if err != nil {
-			return nil, err
-		}
-		seg := i / v1SegmentRecords * v1SegmentRecords
-		it.v1Fwd, it.v1Back, it.v1Total = seg, seg, n
-		return it, nil
-	}
 	lo, err := rf.lowerBlock(t, size)
 	if err != nil {
 		return nil, err
@@ -222,15 +202,6 @@ func (rf *File) lowerBlock(t, size int64) (int64, error) {
 // Next 回傳往後的下一段記錄; 已到結尾時 ok 為假.
 func (it *Iter) Next() (recs []Record, ok bool, err error) {
 	rf := it.rf
-	if rf.version == version1 {
-		if it.v1Fwd >= it.v1Total {
-			return nil, false, nil
-		}
-		start := it.v1Fwd
-		it.v1Fwd += v1SegmentRecords
-		recs, err := rf.v1ReadIndexRange(start, start+v1SegmentRecords, it.v1Total, it.withProcs)
-		return recs, err == nil, err
-	}
 	for it.fwd < it.size {
 		var h blockHeader
 		var content []byte
@@ -259,15 +230,6 @@ func (it *Iter) Next() (recs []Record, ok bool, err error) {
 // Prev 回傳往前的上一段記錄; 已到開頭時 ok 為假.
 func (it *Iter) Prev() (recs []Record, ok bool, err error) {
 	rf := it.rf
-	if rf.version == version1 {
-		if it.v1Back <= 0 {
-			return nil, false, nil
-		}
-		end := it.v1Back
-		it.v1Back = max(0, end-v1SegmentRecords)
-		recs, err := rf.v1ReadIndexRange(it.v1Back, end, it.v1Total, it.withProcs)
-		return recs, err == nil, err
-	}
 	for it.back > 0 {
 		h, content, ok, err := rf.blockBefore(it.back, it.backHdr, it.size)
 		if err != nil {
@@ -323,14 +285,14 @@ func (rf *File) Backward(t int64, withProcs bool, fn func(rec *Record) bool) err
 	return rf.eachBackward(t, withProcs, func(rec *Record, _ recLoc) bool { return fn(rec) })
 }
 
-// recLoc 為一筆版本 2 記錄的位置, 即所在區塊與其在區塊內的索引.
+// recLoc 為一筆記錄的位置, 即所在區塊與其在區塊內的索引.
 type recLoc struct {
 	blk blockHeader
 	idx int
 }
 
 // eachBackward 由時刻不晚於 t 的最後一筆記錄起, 往前逐筆呼叫 fn, fn 回傳假時停止.
-// 版本 2 的 loc 為該筆記錄的位置, 版本 1 時無意義.
+// loc 為該筆記錄的位置.
 func (rf *File) eachBackward(t int64, withProcs bool, fn func(rec *Record, loc recLoc) bool) error {
 	seekT := t
 	if t < math.MaxInt64 {
@@ -367,12 +329,8 @@ type ProcessList struct {
 // 供換算使用率. 沒有這樣的取樣或該次取樣的列表無法還原時 cur 為 nil. 沒有前一次取樣, 兩者
 // 之間有斷線記錄, 或前一次取樣的列表無法還原時 prev 為 nil.
 //
-// 版本 1 以程序記錄為單位, cur 為時刻不晚於 t 的最近一筆程序記錄, prev 為其前一筆程序記錄.
-// 版本 2 依 docs/recording-format-v2.md 6.5 由列表重設區塊起套用程序變動記錄還原.
+// 依 docs/recording-format-v2.md 6.5 由列表重設區塊起套用程序變動記錄還原.
 func (rf *File) ProcessesAt(t int64) (cur, prev *ProcessList, err error) {
-	if rf.version == version1 {
-		return rf.v1ProcessesAt(t)
-	}
 	var s, p *Record
 	var sLoc, pLoc recLoc
 	err = rf.eachBackward(t, true, func(rec *Record, loc recLoc) bool {
@@ -492,24 +450,4 @@ func (rf *File) restore(start int64, targets []recLoc) ([]json.RawMessage, error
 	}
 	finish()
 	return out, nil
-}
-
-// v1ProcessesAt 為版本 1 的 ProcessesAt.
-func (rf *File) v1ProcessesAt(t int64) (cur, prev *ProcessList, err error) {
-	err = rf.eachBackward(t, true, func(rec *Record, _ recLoc) bool {
-		switch rec.Kind {
-		case KindProcesses:
-			if cur == nil {
-				cur = &ProcessList{Time: rec.Time, Procs: json.RawMessage(rec.Text)}
-				return true
-			}
-			prev = &ProcessList{Time: rec.Time, Procs: json.RawMessage(rec.Text)}
-			return false
-		case KindDisconnect:
-			// 斷線前後的累計值不可相減, 不必再找前一筆.
-			return cur == nil
-		}
-		return true
-	})
-	return cur, prev, err
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  GPU Monitor 應用程式圖示 (macOS Dock 與 .app, Windows 執行檔, 視窗與安裝包, 關於
+  PerfMon 應用程式圖示 (macOS Dock 與 .app, Windows 執行檔, 視窗與安裝包, 關於
   視窗) 的母版. 藍色圓角方磚上一隻白色章魚, 觸手與 tray.svg 相同, 眼睛位於臉部,
   以方磚色鏤空; tray.svg 為了小尺寸另行加大圓頂並把眼睛移入圓頂, 兩者頭部不同. 繪製順序即疊圖順序, 後畫者蓋在前者之上. 衍生圖檔由同目錄的
   generate.sh 產生.

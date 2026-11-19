@@ -1,8 +1,8 @@
-# gpumon
+# perfmon
 
-gpumon is a desktop GUI application for Windows and macOS that monitors the GPUs of remote Linux hosts over SSH. It shows utilization, memory, temperature, power draw, and per-process usage in real time, in a layout similar to `nvtop`.
+perfmon is a desktop GUI application for Windows and macOS that monitors the GPUs of remote Linux hosts over SSH. It shows utilization, memory, temperature, power draw, and per-process usage in real time, in a layout similar to `nvtop`.
 
-![gpumon screens: add host, monitor, process filter, recordings, history, settings, and about](docs/images/screens.gif)
+![perfmon screens: add host, monitor, process filter, recordings, history, settings, and about](docs/images/screens.gif)
 
 ## Features
 
@@ -33,7 +33,7 @@ Remote host:
 
 - Linux x86_64 with glibc. Distributions that use musl, such as Alpine Linux, are not supported.
 - SSH login with a regular user account.
-- A home directory that is writable and executable. The remote program is placed in `~/.gpumon/`.
+- A home directory that is writable and executable. The remote program is placed in `~/.perfmon/`.
 
 ## Tested GPUs
 
@@ -43,4 +43,4 @@ Remote host:
 
 ## License
 
-gpumon is released under the MIT License. See [LICENSE.md](LICENSE.md).
+perfmon is released under the MIT License. See [LICENSE.md](LICENSE.md).

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 // writeFile 於測試目錄建立檔案, 必要時建立上層目錄.

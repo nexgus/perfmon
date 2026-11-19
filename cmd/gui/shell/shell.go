@@ -1,5 +1,5 @@
 // Package shell 管理本機 GUI 的主視窗, 關於視窗, 主選單與匣圖示, 並負責結束程式前的
-// 確認與主視窗大小與位置的記憶. 規格見 docs/gpumon-design.md 的 6.1 與 6.2.
+// 確認與主視窗大小與位置的記憶. 規格見 docs/perfmon-design.md 的 6.1 與 6.2.
 package shell
 
 import (
@@ -13,11 +13,11 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 
-	"gpumon/cmd/gui/backend"
-	"gpumon/frontend/src/i18n"
-	"gpumon/internal/appinfo"
-	"gpumon/internal/monitor"
-	"gpumon/internal/settings"
+	"perfmon/cmd/gui/backend"
+	"perfmon/frontend/src/i18n"
+	"perfmon/internal/appinfo"
+	"perfmon/internal/monitor"
+	"perfmon/internal/settings"
 )
 
 const (
@@ -100,7 +100,7 @@ func (s *Shell) Attach(app *application.App) {
 }
 
 // ShouldQuit 為 application.Options 的 ShouldQuit, 於任何方式要求結束程式時呼叫 (關閉
-// 主視窗, 選單的 "Quit GPU Monitor" 與 "Exit", 匣圖示選單的 "結束", macOS 的 Cmd+Q 與
+// 主視窗, 選單的 "Quit PerfMon" 與 "Exit", 匣圖示選單的 "結束", macOS 的 Cmd+Q 與
 // Dock 選單). 有主機連線中或重新連線中而使用者尚未確認時, 要求主視窗顯示結束確認
 // 視窗並回傳 false; 否則回傳 true, 程式隨即結束. 可能於主執行緒呼叫.
 func (s *Shell) ShouldQuit() bool {

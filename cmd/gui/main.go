@@ -1,4 +1,4 @@
-// Command gpumon 為本機 GUI "GPU Monitor", 以 Wails 3 開啟主視窗.
+// Command perfmon 為本機 GUI "PerfMon", 以 Wails 3 開啟主視窗.
 package main
 
 import (
@@ -15,13 +15,13 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
-	"gpumon/assets/icon"
-	"gpumon/cmd/gui/backend"
-	"gpumon/cmd/gui/shell"
-	"gpumon/frontend"
-	"gpumon/internal/appinfo"
-	"gpumon/internal/remotebin"
-	"gpumon/internal/settings"
+	"perfmon/assets/icon"
+	"perfmon/cmd/gui/backend"
+	"perfmon/cmd/gui/shell"
+	"perfmon/frontend"
+	"perfmon/internal/appinfo"
+	"perfmon/internal/remotebin"
+	"perfmon/internal/settings"
 )
 
 func main() {
@@ -31,9 +31,9 @@ func main() {
 		log.Fatal("embedded remote program is empty")
 	}
 
-	// 環境變數 GPUMON_DATA_DIR 有值時以其為應用程式資料目錄, 供測試使用, 避免寫入
+	// 環境變數 PERFMON_DATA_DIR 有值時以其為應用程式資料目錄, 供測試使用, 避免寫入
 	// 真實的資料目錄.
-	dataDir := os.Getenv("GPUMON_DATA_DIR")
+	dataDir := os.Getenv("PERFMON_DATA_DIR")
 	if dataDir == "" {
 		var err error
 		dataDir, err = settings.DefaultDir()
@@ -100,12 +100,12 @@ func instanceID(dataDir string) string {
 		dataDir = abs
 	}
 	sum := sha256.Sum256([]byte(dataDir))
-	return "io.github.nexgus.gpumon." + hex.EncodeToString(sum[:8])
+	return "io.github.nexgus.perfmon." + hex.EncodeToString(sum[:8])
 }
 
 // appIcon 傳回交給 Wails 的應用程式圖示. macOS 直接執行未包裝於 .app 的執行檔時, Dock
 // 沒有圖示可用, 以內嵌的應用程式圖示補上. 執行檔位於 .app 之內時傳回 nil, 由 .app 內的
-// Assets.car 或 gpumon.icns 提供圖示, 以保留 macOS 26 起的圖示樣式; Wails 一經設定圖示
+// Assets.car 或 perfmon.icns 提供圖示, 以保留 macOS 26 起的圖示樣式; Wails 一經設定圖示
 // 即覆蓋 .app 的圖示. Windows 的視窗圖示取自執行檔內的圖示資源, 此圖示僅在資源缺少時
 // 才被採用.
 func appIcon() []byte {

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"gpumon/internal/sshconn"
+	"perfmon/internal/sshconn"
 )
 
 // idSeq 產生對話框的識別字串. 所有種類的對話框共用同一個序列, 識別字串互不重複.

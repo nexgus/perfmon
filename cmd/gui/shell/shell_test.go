@@ -3,9 +3,9 @@ package shell
 import (
 	"testing"
 
-	"gpumon/frontend/src/i18n"
-	"gpumon/internal/monitor"
-	"gpumon/internal/settings"
+	"perfmon/frontend/src/i18n"
+	"perfmon/internal/monitor"
+	"perfmon/internal/settings"
 )
 
 func TestPlaceMainWindow(t *testing.T) {
@@ -101,7 +101,7 @@ func TestMenuKeysInBothLanguages(t *testing.T) {
 			}
 		}
 	}
-	if got := i18n.Text("zh-TW", "menu.about"); got != "關於 GPU Monitor" {
+	if got := i18n.Text("zh-TW", "menu.about"); got != "關於 PerfMon" {
 		t.Errorf(`Text("zh-TW", "menu.about") = %q`, got)
 	}
 	if got := i18n.Text("xx", "tray.quit"); got != "Quit" {

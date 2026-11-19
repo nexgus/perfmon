@@ -1,4 +1,4 @@
-// Package gpu 取得本機 GPU 的靜態資訊與即時取樣, 供遠端程式 gpumon 使用.
+// Package gpu 取得本機 GPU 的靜態資訊與即時取樣, 供遠端程式 perfmon 使用.
 //
 // NVIDIA 以 NVML 取得, NVML 於執行期以 purego 載入, 找不到即略過; AMD 與
 // Intel 讀取 sysfs 與 /proc/<pid>/fdinfo. 不需要 root, 也不變更任何系統設定.
@@ -8,7 +8,7 @@ package gpu
 import (
 	"errors"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 // Collector 持有所有偵測到的 GPU. Sample 不可同時由多個 goroutine 呼叫.

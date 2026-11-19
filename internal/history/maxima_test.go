@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 func runsOf(rel ...int64) [][2]int64 {
@@ -120,7 +120,7 @@ func TestMaximaEmptyAndMissing(t *testing.T) {
 	if len(r.GPUs) != 1 || len(r.GPUs[0].Fields) != 0 {
 		t.Fatalf("result = %+v", r)
 	}
-	if _, err := Maxima(t.TempDir() + "/none.gpurec"); err == nil {
+	if _, err := Maxima(t.TempDir() + "/none.perfrec"); err == nil {
 		t.Fatal("expected error")
 	}
 }
@@ -171,7 +171,7 @@ func TestSampleAt(t *testing.T) {
 	if r := at(twall + 10*sec); r == nil || r.Time != twall+10*sec || *r.GPUs[0].Util != 50 {
 		t.Fatalf("after reconnect = %+v", r)
 	}
-	if _, err := SampleAt(t.TempDir()+"/none.gpurec", 0); err == nil {
+	if _, err := SampleAt(t.TempDir()+"/none.perfrec", 0); err == nil {
 		t.Fatal("expected error")
 	}
 }

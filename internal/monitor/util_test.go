@@ -3,7 +3,7 @@ package monitor
 import (
 	"testing"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 func proc(pid int, engines map[string]uint64) protocol.Process {

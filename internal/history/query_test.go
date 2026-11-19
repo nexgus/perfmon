@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 func TestRawBelowWidth(t *testing.T) {

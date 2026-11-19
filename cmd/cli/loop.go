@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 // sampleTimeout 為單次取樣的逾時. NVML 偶爾會卡住 (例如 GPU 重設中), 逾時即
@@ -118,7 +118,7 @@ type sampleResult struct {
 // 輸出 steps 筆 sample 後結束.
 func runLoop(cfg loopConfig, col collector, stdout, stderr io.Writer, hostname, progVersion string) int {
 	logf := func(format string, args ...any) {
-		fmt.Fprintf(stderr, "gpumon: "+format+"\n", args...)
+		fmt.Fprintf(stderr, "perfmon: "+format+"\n", args...)
 	}
 	clk := newClock()
 	out := output{w: stdout}

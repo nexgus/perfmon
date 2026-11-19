@@ -7,16 +7,16 @@ import (
 	"path/filepath"
 	"sort"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
-const fileExt = ".gpurec"
+const fileExt = ".perfrec"
 
 // 刪除被拒絕的原因.
 var (
 	// ErrActiveFile 表示該檔案正由連線中的主機寫入, 不可刪除.
 	ErrActiveFile = errors.New("history: file is being recorded")
-	// ErrOutsideHistory 表示路徑不是記錄檔目錄內的 .gpurec 檔案.
+	// ErrOutsideHistory 表示路徑不是記錄檔目錄內的 .perfrec 檔案.
 	ErrOutsideHistory = errors.New("history: path is not a recording file inside the history directory")
 )
 
@@ -165,7 +165,7 @@ func isActive(path string, active []string) bool {
 	return false
 }
 
-// Delete 刪除一個記錄檔. 路徑必須是 `<dataDir>/history/<主機目錄>/` 內副檔名為 .gpurec 的一般檔案
+// Delete 刪除一個記錄檔. 路徑必須是 `<dataDir>/history/<主機目錄>/` 內副檔名為 .perfrec 的一般檔案
 // (不跟隨符號連結), 否則回傳 ErrOutsideHistory; 路徑在 active 之中時回傳 ErrActiveFile. 兩種情形皆不刪除任何東西.
 func Delete(dataDir, path string, active []string) error {
 	abs, err := filepath.Abs(path)

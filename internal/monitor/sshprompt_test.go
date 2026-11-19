@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"gpumon/internal/sshconn"
+	"perfmon/internal/sshconn"
 )
 
 // canceledErr 模擬 sshconn 於使用者取消時回傳的錯誤.

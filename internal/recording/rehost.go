@@ -31,7 +31,7 @@ func Rehost(dataDir, oldHost, newHost string) error {
 	}
 	var errs []error
 	for _, e := range entries {
-		if !e.Type().IsRegular() || filepath.Ext(e.Name()) != ".gpurec" {
+		if !e.Type().IsRegular() || filepath.Ext(e.Name()) != ".perfrec" {
 			continue
 		}
 		if err := rehostFile(filepath.Join(srcDir, e.Name()), dstDir, oldHost, newHost); err != nil {
@@ -141,11 +141,11 @@ func replaceHostMember(meta []byte, host string) ([]byte, error) {
 
 // freeName 回傳 dir 中尚未使用的檔名, name 已存在時依序加 `-2`, `-3`.
 func freeName(dir, name string) (string, error) {
-	stem := strings.TrimSuffix(name, ".gpurec")
+	stem := strings.TrimSuffix(name, ".perfrec")
 	for i := 1; ; i++ {
 		n := name
 		if i > 1 {
-			n = fmt.Sprintf("%s-%d.gpurec", stem, i)
+			n = fmt.Sprintf("%s-%d.perfrec", stem, i)
 		}
 		p := filepath.Join(dir, n)
 		if _, err := os.Lstat(p); errors.Is(err, os.ErrNotExist) {

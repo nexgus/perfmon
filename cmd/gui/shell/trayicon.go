@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"time"
 
-	"gpumon/assets/icon"
+	"perfmon/assets/icon"
 )
 
 // 監看中的眨眼循環. 影格編號 0 為睜眼, 3 為閉眼; 一個循環依序顯示下列影格, 每格

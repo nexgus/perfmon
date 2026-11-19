@@ -47,7 +47,7 @@ func TestRehost(t *testing.T) {
 	if filepath.Base(newDir) != "bob@s_v+2222" || filepath.Base(clash) != filepath.Base(a) {
 		t.Fatalf("new dir %s, %s", newDir, clash)
 	}
-	movedA := filepath.Join(newDir, trimExt(filepath.Base(a))+"-2.gpurec")
+	movedA := filepath.Join(newDir, trimExt(filepath.Base(a))+"-2.perfrec")
 	movedB := filepath.Join(newDir, filepath.Base(b))
 	for _, p := range []string{a, b} {
 		if _, err := os.Stat(p); !os.IsNotExist(err) {

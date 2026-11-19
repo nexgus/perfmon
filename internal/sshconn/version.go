@@ -29,7 +29,7 @@ var programVersionRE = regexp.MustCompile(
 // 不含 "+<內容雜湊值>" 一段; 舊版的遠端程式於該位置輸出 commit hash, 或以
 // "+unknown" 與 "-dirty" 表示, 一併接受.
 var versionOutputRE = regexp.MustCompile(
-	`^gpumon (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\.(0|[1-9][0-9]*))?(?:\+([0-9a-f]{7}|unknown)(-dirty)?)? \(protocol ([1-9][0-9]*)\)$`)
+	`^perfmon (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\.(0|[1-9][0-9]*))?(?:\+([0-9a-f]{7}|unknown)(-dirty)?)? \(protocol ([1-9][0-9]*)\)$`)
 
 // hashSinceVersion 為遠端程式開始於 --version 輸出內容雜湊值的程式版號. 低於此版號
 // 的遠端程式於 "+" 之後輸出 commit hash, 不視為內容雜湊值.

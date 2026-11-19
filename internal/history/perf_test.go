@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 const worstSamples = 432000

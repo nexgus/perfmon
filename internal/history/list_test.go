@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 func mustExist(t *testing.T, p string, want bool) {
@@ -40,14 +40,14 @@ func TestListGroupsAndTotals(t *testing.T) {
 
 	// 損毀與非記錄檔: 檔頭不符, 版本不認得, 截斷, 副檔名不符.
 	hd := filepath.Join(dir, "history", "alice@10.0.0.1")
-	os.WriteFile(filepath.Join(hd, "bad1.gpurec"), []byte("not a recording at all"), 0o644)
-	os.WriteFile(filepath.Join(hd, "bad2.gpurec"), []byte{}, 0o644)
+	os.WriteFile(filepath.Join(hd, "bad1.perfrec"), []byte("not a recording at all"), 0o644)
+	os.WriteFile(filepath.Join(hd, "bad2.perfrec"), []byte{}, 0o644)
 	raw, _ := os.ReadFile(a1.Path())
 	raw[8] = 9
-	os.WriteFile(filepath.Join(hd, "bad3.gpurec"), raw, 0o644)
-	os.WriteFile(filepath.Join(hd, "bad4.gpurec"), raw[:20], 0o644)
+	os.WriteFile(filepath.Join(hd, "bad3.perfrec"), raw, 0o644)
+	os.WriteFile(filepath.Join(hd, "bad4.perfrec"), raw[:20], 0o644)
 	os.WriteFile(filepath.Join(hd, "note.txt"), []byte("x"), 0o644)
-	os.WriteFile(filepath.Join(dir, "history", "stray.gpurec"), []byte("x"), 0o644)
+	os.WriteFile(filepath.Join(dir, "history", "stray.perfrec"), []byte("x"), 0o644)
 
 	l, err := List(dir, []string{a1.Path()})
 	if err != nil {
@@ -108,35 +108,35 @@ func TestDeleteRestrictions(t *testing.T) {
 	add(w2, 0, 1000, 1, 0)
 	flush(t, w2)
 
-	outside := filepath.Join(t.TempDir(), "x.gpurec")
+	outside := filepath.Join(t.TempDir(), "x.perfrec")
 	os.WriteFile(outside, []byte("x"), 0o644)
 	hd := filepath.Dir(w.Path())
 	txt := filepath.Join(hd, "note.txt")
 	os.WriteFile(txt, []byte("x"), 0o644)
-	stray := filepath.Join(dir, "history", "stray.gpurec")
+	stray := filepath.Join(dir, "history", "stray.perfrec")
 	os.WriteFile(stray, []byte("x"), 0o644)
 	deep := filepath.Join(hd, "sub")
 	os.MkdirAll(deep, 0o755)
-	deepFile := filepath.Join(deep, "y.gpurec")
+	deepFile := filepath.Join(deep, "y.perfrec")
 	os.WriteFile(deepFile, []byte("x"), 0o644)
-	dirNamed := filepath.Join(hd, "dir.gpurec")
+	dirNamed := filepath.Join(hd, "dir.perfrec")
 	os.MkdirAll(dirNamed, 0o755)
-	link := filepath.Join(hd, "link.gpurec")
+	link := filepath.Join(hd, "link.perfrec")
 	linkOK := os.Symlink(outside, link) == nil
 	hostLink := filepath.Join(dir, "history", "linkhost")
 	hostLinkOK := os.Symlink(filepath.Dir(outside), hostLink) == nil
 
 	bad := []string{
 		outside, txt, stray, deepFile, dirNamed, dir, hd,
-		filepath.Join(hd, "..", "..", "..", filepath.Base(filepath.Dir(outside)), "x.gpurec"),
-		filepath.Join(hd, ".gpurec"),
-		filepath.Join(hd, "missing.gpurec"),
+		filepath.Join(hd, "..", "..", "..", filepath.Base(filepath.Dir(outside)), "x.perfrec"),
+		filepath.Join(hd, ".perfrec"),
+		filepath.Join(hd, "missing.perfrec"),
 	}
 	if linkOK {
 		bad = append(bad, link)
 	}
 	if hostLinkOK {
-		bad = append(bad, filepath.Join(hostLink, "x.gpurec"))
+		bad = append(bad, filepath.Join(hostLink, "x.perfrec"))
 	}
 	for _, p := range bad {
 		if err := Delete(dir, p, nil); err == nil {

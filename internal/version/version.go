@@ -1,4 +1,4 @@
-// Package version 集中管理 gpumon 的版本資訊, 遠端程式與本機 GUI 共用.
+// Package version 集中管理 perfmon 的版本資訊, 遠端程式與本機 GUI 共用.
 //
 // 程式版號直接編輯常數 VERSION; GUI 的 commit hash 與建置時間由 build.sh 於建置期以
 // -ldflags -X 注入, 未經 build.sh 建置時為 unknown. 遠端程式不注入這兩項, 其版本

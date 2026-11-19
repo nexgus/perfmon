@@ -1,5 +1,5 @@
 {
-  "app.name": "GPU Monitor",
+  "app.name": "PerfMon",
 
   "sidebar.hosts": "Hosts",
   "sidebar.addHost": "Add Host",
@@ -35,7 +35,7 @@
   "monitor.noTabs": "No host is being monitored. Use Connect in the sidebar to start monitoring a host.",
   "monitor.closeTab": "Close the tab of {name}",
   "monitor.curves": "Curves",
-  "monitor.noGpu": "This host has no GPU that GPU Monitor can monitor.",
+  "monitor.noGpu": "This host has no GPU that PerfMon can monitor.",
   "monitor.notConnected": "Not connected. Use Connect in the sidebar to connect to this host.",
   "monitor.disconnectedRetries": "Disconnected after {max} retries - {reason}. Use Connect in the sidebar to connect to this host again.",
   "monitor.connecting": "Connecting to this host.",
@@ -149,7 +149,7 @@
   "hostKey.unknownText": "{host} is not among the recorded hosts. Check the fingerprint below, then choose whether to continue connecting.",
   "hostKey.changedTitle": "Host Key Mismatch",
   "hostKey.changedWarning": "The host key sent by {host} does not match the recorded key. The host may have been reinstalled, or another computer may be impersonating it.",
-  "hostKey.changedText": "Continue only if you know why the key is different. Updating replaces the keys that GPU Monitor has recorded for this host.",
+  "hostKey.changedText": "Continue only if you know why the key is different. Updating replaces the keys that PerfMon has recorded for this host.",
   "hostKey.keyType": "Key type",
   "hostKey.fingerprint": "Fingerprint",
   "hostKey.newFingerprint": "New fingerprint",
@@ -162,8 +162,8 @@
   "keyResult.appendFailed": "Cannot copy the public key to {host}.",
   "upload.uploadTitle": "Upload Remote Program",
   "upload.updateTitle": "Update Remote Program",
-  "upload.uploadText": "GPU Monitor needs to upload its remote program to {host}. The upload starts when you click OK.",
-  "upload.updateText": "The remote program on {host} differs from the one included in this GPU Monitor and will be replaced. The update starts when you click OK.",
+  "upload.uploadText": "PerfMon needs to upload its remote program to {host}. The upload starts when you click OK.",
+  "upload.updateText": "The remote program on {host} differs from the one included in this PerfMon and will be replaced. The update starts when you click OK.",
   "upload.path": "Location",
   "upload.remoteVersion": "Current version",
   "upload.newVersion": "New version",
@@ -176,10 +176,10 @@
   "errorKind.connect": "Cannot connect to the host.",
   "errorKind.auth": "Authentication failed.",
   "errorKind.host-key": "Cannot verify the host key. The connection was stopped.",
-  "errorKind.platform": "This host is not supported. GPU Monitor supports Linux x86_64 hosts only.",
+  "errorKind.platform": "This host is not supported. PerfMon supports Linux x86_64 hosts only.",
   "errorKind.upload": "Cannot upload the remote program to the host.",
   "errorKind.exec": "Cannot run the remote program on the host.",
-  "errorKind.protocol-too-new": "The remote program is newer than this app. Update GPU Monitor on this computer.",
+  "errorKind.protocol-too-new": "The remote program is newer than this app. Update PerfMon on this computer.",
   "errorKind.config": "The connection settings are incomplete. Edit the host, then connect again.",
   "errorKind.first-message": "The remote program did not start with device information.",
   "errorKind.protocol-mismatch": "The remote program reported an unexpected protocol version.",
@@ -191,7 +191,7 @@
   "errorCode.busy": "Disconnect the host before editing or deleting it.",
   "errorCode.active": "The recording is being written and cannot be deleted.",
   "errorCode.failed": "The operation failed.",
-  "errorCode.closed": "GPU Monitor is quitting.",
+  "errorCode.closed": "PerfMon is quitting.",
 
   "delete.title": "Delete {name}?",
   "delete.text": "The host is removed from the list. Its recordings are kept.",
@@ -275,7 +275,7 @@
   "language.zh-TW": "繁體中文",
 
   "action.quit": "Quit",
-  "quit.title": "Quit GPU Monitor?",
+  "quit.title": "Quit PerfMon?",
   "quit.text": "All connections will be closed and monitoring will stop.",
 
   "about.tabAbout": "About",
@@ -296,14 +296,14 @@
   "licenses.component": "COMPONENT",
   "licenses.license": "LICENSE",
 
-  "menu.about": "About GPU Monitor",
+  "menu.about": "About PerfMon",
   "menu.settingsMac": "Settings...",
   "menu.settings": "Settings",
   "menu.services": "Services",
-  "menu.hide": "Hide GPU Monitor",
+  "menu.hide": "Hide PerfMon",
   "menu.hideOthers": "Hide Others",
   "menu.showAll": "Show All",
-  "menu.quitMac": "Quit GPU Monitor",
+  "menu.quitMac": "Quit PerfMon",
   "menu.file": "File",
   "menu.exit": "Exit",
   "menu.edit": "Edit",
@@ -326,6 +326,6 @@
   "menu.licenses": "Third-Party Licenses",
   "tray.show": "Show Window",
   "tray.quit": "Quit",
-  "tray.tooltip": "GPU Monitor",
-  "tray.tooltipReconnecting": "GPU Monitor - a host is reconnecting"
+  "tray.tooltip": "PerfMon",
+  "tray.tooltipReconnecting": "PerfMon - a host is reconnecting"
 }

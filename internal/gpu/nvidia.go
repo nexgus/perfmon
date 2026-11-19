@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"gpumon/internal/protocol"
+	"perfmon/internal/protocol"
 )
 
 // nvidiaGPU 為一張以 NVML 取樣的 NVIDIA GPU.

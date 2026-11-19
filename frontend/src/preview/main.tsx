@@ -52,7 +52,7 @@ function uploadNotice(id: string, host: string, update: boolean) {
     id,
     host,
     name: host,
-    path: "~/.gpumon/gpumon",
+    path: "~/.perfmon/perfmon",
     update,
     remote_version: update ? "0.1.0" : "",
     new_version: update ? "0.2.0-beta.1" : "0.1.0",
@@ -162,7 +162,7 @@ function scenario(): void {
         host: "bob@render-farm",
         name: "bob@render-farm",
         kind: "platform",
-        message: "This host is Darwin arm64. GPU Monitor supports Linux x86_64 hosts only.",
+        message: "This host is Darwin arm64. PerfMon supports Linux x86_64 hosts only.",
       });
       mock.emit("monitor:prompt", {
         id: "p3",
@@ -186,7 +186,7 @@ function scenario(): void {
         host: "bob@render-farm",
         name: "bob@render-farm",
         kind: "platform",
-        message: "This host is Darwin arm64. GPU Monitor supports Linux x86_64 hosts only.",
+        message: "This host is Darwin arm64. PerfMon supports Linux x86_64 hosts only.",
       });
       later(() =>
         mock.emit("monitor:error", {

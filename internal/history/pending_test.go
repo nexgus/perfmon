@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"gpumon/internal/recording"
+	"perfmon/internal/recording"
 )
 
 // TestQueryRangePending 確認尚未存檔的記錄接續於檔尾查詢時, 結果與全部存檔後相同.

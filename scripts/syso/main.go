@@ -1,7 +1,7 @@
 // 命令 syso 由 .ico 產生 Windows 執行檔的資源檔 (.syso), 只寫入圖示資源, 不寫入
 // application manifest. 圖示的資源 ID 為 3, Wails 以此作為 Windows 視窗圖示.
 //
-// 用法: syso -ico gpumon.ico -out rsrc_windows_amd64.syso
+// 用法: syso -ico perfmon.ico -out rsrc_windows_amd64.syso
 package main
 
 import (

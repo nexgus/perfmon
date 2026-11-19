@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"gpumon/internal/protocol"
-	"gpumon/internal/recording"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/protocol"
+	"perfmon/internal/recording"
+	"perfmon/internal/sshconn"
 )
 
 // maxLineBytes 為讀取遠端訊息的單行上限, 超過者捨棄並記錄到日誌.

@@ -15,10 +15,10 @@ import (
 	"sync"
 	"time"
 
-	"gpumon/internal/history"
-	"gpumon/internal/protocol"
-	"gpumon/internal/settings"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/history"
+	"perfmon/internal/protocol"
+	"perfmon/internal/settings"
+	"perfmon/internal/sshconn"
 )
 
 // Timing 為連線管理所用的各項時間與次數. 正式環境使用 DefaultTiming, 測試可縮短.
@@ -296,7 +296,7 @@ func (m *Manager) Connect(id string) error {
 	m.mu.Lock()
 	if m.closed {
 		m.mu.Unlock()
-		return newErr(CodeClosed, "GPU Monitor is quitting")
+		return newErr(CodeClosed, "PerfMon is quitting")
 	}
 	s := m.sessionLocked(id)
 	s.start()

@@ -10,10 +10,10 @@ import (
 	"reflect"
 	"testing"
 
-	"gpumon/internal/history"
-	"gpumon/internal/recording"
-	"gpumon/internal/settings"
-	"gpumon/internal/sshconn"
+	"perfmon/internal/history"
+	"perfmon/internal/recording"
+	"perfmon/internal/settings"
+	"perfmon/internal/sshconn"
 )
 
 func TestSSHConfigDefaults(t *testing.T) {

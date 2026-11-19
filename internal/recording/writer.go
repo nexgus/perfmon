@@ -127,9 +127,9 @@ func Create(dataDir string, h Header) (*Writer, error) {
 	var f *os.File
 	var path string
 	for i := 1; ; i++ {
-		name := stem + ".gpurec"
+		name := stem + ".perfrec"
 		if i > 1 {
-			name = fmt.Sprintf("%s-%d.gpurec", stem, i)
+			name = fmt.Sprintf("%s-%d.perfrec", stem, i)
 		}
 		path = filepath.Join(dir, name)
 		f, err = os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE|os.O_EXCL, 0o644)
